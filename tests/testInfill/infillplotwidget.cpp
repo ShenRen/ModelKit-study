@@ -15,6 +15,8 @@ void _drawPolygons(QPainter *p, const Polygon &polygon, qreal scale)
     p->drawPolygon(qp);
 }
 
+
+
 InfillPlotWidget::InfillPlotWidget(QWidget *parent) : QWidget(parent)
 {
 

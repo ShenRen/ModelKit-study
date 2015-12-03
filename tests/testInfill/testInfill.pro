@@ -8,7 +8,9 @@ DESTDIR = $$OUT_PWD/../../bin
 
 SOURCES += \
     testinfill.cpp \
-    infillplotwidget.cpp
+    infillplotwidget.cpp \
+    draw.cpp \
+    window.cpp
 
 unix|win32: LIBS += -L$$DESTDIR -lModelKit
 
@@ -16,4 +18,6 @@ INCLUDEPATH += $$PWD/../../include
 DEPENDPATH += $$INCLUDEPATH
 
 HEADERS += \
-    infillplotwidget.h
+    infillplotwidget.h \
+    draw.h \
+    window.h

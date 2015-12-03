@@ -3,6 +3,8 @@
 #include "slcmodel.h"
 #include <QElapsedTimer>
 //#include <qstring.h>
+#include "draw.h"
+#include "window.h"
 
 using namespace XJRP;
 
@@ -50,9 +52,11 @@ int main(int argc, char *argv[])
 
     qDebug () << double (t2.nsecsElapsed ()) / 1e9;
     qDebug() << "finished record time.";
-    InfillPlotWidget w;
+    draw w;
     w.setLayer (l);
     w.show ();
+    Window W(&m);
+    W.show();
 
     return a.exec ();
 }

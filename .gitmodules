@@ -1,0 +1,9 @@
+[submodule "3rdparty/clipper"]
+	path = 3rdparty/clipper
+	url = git@bitbucket.org:ht3d/clipper.git
+[submodule "3rdparty/cura"]
+	path = 3rdparty/cura
+	url = git@bitbucket.org:ht3d/cura.git
+[submodule "3rdparty/xd"]
+	path = 3rdparty/xd
+	url = git@bitbucket.org:ht3d/xd.git
