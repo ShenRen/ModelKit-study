@@ -233,7 +233,7 @@ void Layer::infill(const Layer::InfillSpecification &spec)
 
         qreal zValue (height ());
 
-        for (int i = 0; i != spec.extraContourCount; ++i)
+        for (int i = 0; i != outputContour.size(); ++i)   //这里不能用spec.extraContourCount，因为可能没有偏置轮廓
         {
             Polygon temPolygon;
             for (uint j = 0; j != outputContour[i].size(); ++j)

@@ -7,34 +7,34 @@
 
 using namespace XJRP;
 
-void _drawPolygon(QPainter *p, const Polygon &polygon, qreal scale)  //±¾Éíº¯Êý
+void _drawPolygon(QPainter *p, const QPolygonF &polygon, qreal scale)  //»­QPolygonF
 {
     //temp
-    QPolygonF qp;
-    switch (polygon.type ())
-    {
-    case Polygon::Infill :
-        p->setPen (QPen (Qt::blue));
-        break;
-    case Polygon::Contour :
-        p->setPen (QPen (Qt::red));
-        break;
-    case Polygon::Support :
-        p->setPen (QPen (Qt::darkGreen));
-        break;
-    }
-    for (const Point &point : polygon)
-    {
-        qp.append (QPointF (point.x () * scale, point.y () * scale));
-    }
-    p->drawPolygon(qp);
+    p->drawPolygon(polygon);
 }
 
-void _drawLayer(QPainter *p, const Layer & L,qreal scale)
+void _drawLayer(QPainter *p, const Layer & L,qreal scale)   //»­Layer
 {
      for(const Polygon & po : L)
      {
-         _drawPolygon(p,po,scale);
+        QPolygonF qp;
+        switch (po.type ())
+        {
+            case Polygon::Infill :
+                p->setPen (QPen (Qt::blue));
+                break;
+            case Polygon::Contour :
+                p->setPen (QPen (Qt::red));
+                break;
+            case Polygon::Support :
+                p->setPen (QPen (Qt::darkGreen));
+                break;
+        }
+        for (const Point &point : po)
+        {
+            qp.append (QPointF (point.x () * scale, point.y () * scale));
+        }
+        _drawPolygon(p,qp,scale);
      }
 }
 
@@ -69,14 +69,19 @@ void draw::setBrush(const QBrush &brush)
     update();
 }
 
-void draw::setLayer(const Layer &layer)
+void draw::setLayer(const Layer &L)
+{   
+    this->layer = L;
+    update();
+}
+
+void draw::setModel(const SLCModel &M)
 {
+    this->Model=M;
     moveX=this->width()/2;
     moveY=this->height()/2;
-    this->layer = layer;
-    Boundary boundary (layer.boundary ());
+    Boundary boundary (this->Model.boundary());
     scale=(this->height()/(boundary.maxX () - boundary.minX ()));
-    update();
 }
 
 void draw::paintEvent(QPaintEvent * /* event */)

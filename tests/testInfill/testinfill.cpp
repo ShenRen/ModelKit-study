@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     SLCModel m;
-    QElapsedTimer t2;
-    t2.start ();
+//    QElapsedTimer t2;
+//    t2.start ();
 //    for (int i = 0; i < 4; ++i)
 //    {
 //        SLCModel _model;
@@ -30,33 +30,31 @@ int main(int argc, char *argv[])
 //        qDebug () << _model.boundary ();
 //        m.merge (_model);
 //    }
-    m.readFile (QString ("C:/Users/Administrator/Desktop/test-data/lucy_molding01.slc"));
+    m.readFile (QString ("C:/Users/Administrator/Desktop/tank.slc"));
 
-    qDebug () << double (t2.nsecsElapsed ()) / 1e9;
+//    qDebug () << double (t2.nsecsElapsed ()) / 1e9;
 
-    qDebug () << m.boundary ();
-    qDebug () << m.size();
+//    qDebug () << m.boundary ();
+//    qDebug () << m.size();
 
-    t2.restart ();
-    Layer l (m.layerAtIndex (40));
-    //声明cura填充形式
-    Layer::InfillSpecification spec;
-    spec.type = Layer::InfillSpecification::InfillType::Unidirectional;
-    spec.lineWidth = 0.1;
-    spec.interval = 0.1;
-    spec.angle = 0;
-    spec.shrinkWidth = 0.1;
-    spec.extraContourCount = 0;
-    spec.extraContourWidth = 0;
-    l.infill (spec);
-
-    qDebug () << double (t2.nsecsElapsed ()) / 1e9;
-    qDebug() << "finished record time.";
-    draw w;
-    w.setLayer (l);
-    w.show ();
-    Window W(&m);
-    W.show();
+//    t2.restart ();
+//    Layer l (m.layerAtIndex (40));
+//    //声明cura填充形式
+//    Layer::InfillSpecification spec;
+//    spec.type = Layer::InfillSpecification::InfillType::Unidirectional;
+//    spec.lineWidth = 0.1;
+//    spec.interval = 0.1;
+//    spec.angle = 0;
+//    spec.shrinkWidth = 0.1;
+//    spec.extraContourCount = 0;
+//    spec.extraContourWidth = 0;
+    //l.infill (spec);
+    //m.skin_core_infill(3,0.2,0.1,20,30);
+//    qDebug () << double (t2.nsecsElapsed ()) / 1e9;
+//    qDebug() << "finished record time.";
+    //qDebug() << "finished record time.";
+    Window bb;
+    bb.show();
 
     return a.exec ();
 }

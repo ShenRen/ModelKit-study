@@ -5,10 +5,11 @@
 #include "slcmodel.h"
 
 QT_BEGIN_NAMESPACE
-class QCheckBox;
 class QComboBox;
 class QLabel;
 class QSpinBox;
+class QPushButton;
+class QLineEdit;
 QT_END_NAMESPACE
 class draw;
 
@@ -18,16 +19,47 @@ class Window : public QWidget
     Q_OBJECT
 
 public:
-    explicit Window(XJRP::SLCModel *m);
+    explicit Window();
 
 private slots:
     void LayerChanged();
-
+    void openTrigger();
+    void saveTrigger();
+    void clearTrigger();
+    void infillTrigger();
 private:
     XJRP::SLCModel *model;
+
     draw *drawArea;
+
     QLabel *LayerNumLabel;
     QSpinBox *LayerNum;
+
+    QLabel *interval_numLabel;
+    QLineEdit *interval_numEdit;
+
+    QLabel *spaceLabel;
+    QLineEdit *spaceEdit;
+
+    QLabel *shrinkDistanceLabel;
+    QLineEdit *shrinkDistanceEdit;
+
+    QLabel *angle_startLabel;
+    QLineEdit *angle_startEdit;
+
+    QLabel *angle_deltaLabel;
+    QLineEdit *angle_deltaEdit;
+
+    QLabel *LaserPowerLabel;
+    QLineEdit *LaserPowerEdit;
+
+    QLabel *ScanSpeedLabel;
+    QLineEdit *ScanSpeedEdit;
+
+    QPushButton *open;
+    QPushButton *save;
+    QPushButton *clear;
+    QPushButton *infill;
 };
 //! [0]
 

@@ -6,6 +6,7 @@
 #include <QPixmap>
 #include <QWidget>
 #include "layer.h"
+#include "slcmodel.h"
 
 class draw : public QWidget
 {
@@ -16,12 +17,12 @@ public:
     draw(QWidget *parent = 0);
     QSize minimumSizeHint() const Q_DECL_OVERRIDE;   //定义本身widget的最小尺寸
     QSize sizeHint() const Q_DECL_OVERRIDE;   //返回本身widget的推荐值
-    void setLayer(const XJRP::Layer & Layer);
+    void setModel(const XJRP::SLCModel & M);
+    void setLayer(const XJRP::Layer & L);
 public slots:
 
     void setPen(const QPen &pen);
     void setBrush(const QBrush &brush);
-
 
 protected:
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
@@ -36,6 +37,7 @@ private:
     qreal scale;
     QPen pen;
     QBrush brush;
+    XJRP::SLCModel Model;
     XJRP::Layer layer;
 };
 //! [0]

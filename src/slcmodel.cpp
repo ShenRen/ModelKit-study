@@ -274,7 +274,7 @@ void SLCModel::skin_core_infill(int interval_num,float space,float shrinkDistanc
     }
     if(!flag)
         return;  //说明没有需要填充的轮廓数据
-    for(int i=startIndex; i!= (this->size()-startIndex)/interval_num ; i+=interval_num)
+    for(int i=startIndex; i < this->size()-interval_num + 1 ; i+=interval_num)  //这里必须是<符号！
     {
         std::vector<xd::outlines> theInput;
         std::vector<xd::outputOutlines> theOutput;
@@ -296,6 +296,7 @@ void SLCModel::skin_core_infill(int interval_num,float space,float shrinkDistanc
             }
             theInput.push_back(temOutlines);
         }
+		
         float infillDegree = angle_start + (i - startIndex) / interval_num * angle_delta ;
         //第二步：调用填充函数处理interval_num层数据
         xd::OutlinesClipperMethod(theInput, theOutput, space,shrinkDistance,infillDegree);
@@ -304,7 +305,7 @@ void SLCModel::skin_core_infill(int interval_num,float space,float shrinkDistanc
          {
             Layer temL;
             temL.setHeight(this->layerHeights.operator [](j));   //感觉没有必要，最后都加到这一层了！
-            for(const std::pair<xd::outline,unsigned int>  & xo : theOutput[j])
+            for(const std::pair<xd::outline,unsigned int>  & xo : theOutput[j-i])  //这里必须是j-i，注意！
             {
                 Polygon temP;
                 temP.setType(Polygon::PolygonType::Infill);
