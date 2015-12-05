@@ -87,6 +87,8 @@ namespace xd
 
     void InfillLine(outlines TheOutline, outlines & TheResult, float width, float degree, int lunkuo, float shrinkDistance,  float offsetWidth); //自己编写的填充线生成函数。
     void InfillLine(outlines TheOutline, outlines & TheResult, outlines & TheOutlineResult, float width, float degree, int lunkuo, float shrinkDistance, float offsetWidth); //自己编写的填充线生成函数可以分开轮廓填充数据。
+    void InfillLineSLA(outlines TheOutline, outlines & TheResult, float width, float degree, int lunkuo, float shrinkDistance,  float offsetWidth); //自己编写的填充线生成函数。
+    void InfillLineSLA(outlines TheOutline, outlines & TheResult, outlines & TheOutlineResult, float width, float degree, int lunkuo, float shrinkDistance, float offsetWidth); //自己编写的填充线生成函数可以分开轮廓填充数据。
     void notInfillLine(outlines TheOutline, outlines & TheResult, outlines & TheOutlineResult, float width, float degree, int lunkuo, float shrinkDistance, float offsetWidth);//不分区的填充算法，为了加速
     void InfillConcentric(outlines TheOutline, outlines & TheResult, outlines & TheOutlineResult, float width, int lunkuo, float offsetWidth); //自己编写的同学填充函数
 

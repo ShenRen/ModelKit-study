@@ -2,19 +2,58 @@
 #include <QPainter>
 #include <QWheelEvent>
 #include "slcmodel.h"
+#include <QtMath>
 #include "polygon.h"
 #include "layer.h"
 
 using namespace XJRP;
 
+void _drawArrow(QPainter *p, const QPointF & A, const QPointF & B)
+{
+    QPointF temB(std::sqrt(std::pow((A.x()-B.x()), 2) + std::pow(A.y()-B.y(), 2)),0);
+    p->save();
+    p->setPen (QPen (Qt::darkYellow));
+    //想不通，要先平移旋转！
+    p->translate(A);
+    p->rotate(qRadiansToDegrees(std::atan2(B.y()-A.y(),B.x()-A.x())));
+
+    p->drawLine(temB.x(),temB.y(),temB.x()-5,temB.y()+5);
+    p->drawLine(temB.x(),temB.y(),temB.x()-5,temB.y()-5);
+
+    p->restore();
+}
+
+void _drawAxis(QPainter *p)
+{
+    QPointF xNegative(-100,0);
+    QPointF xPositive(100,0);
+    QPointF yNegative(0,-100);
+    QPointF yPositive(0,100);
+    p->setPen(Qt::darkMagenta);
+    p->drawLine(xNegative,xPositive);
+    p->drawLine(yNegative,yPositive);
+    _drawArrow(p,xNegative,xPositive);
+    _drawArrow(p,yNegative,yPositive);
+}
+
 void _drawPolygon(QPainter *p, const QPolygonF &polygon, qreal scale)  //画QPolygonF
 {
     //temp
     p->drawPolygon(polygon);
+    QPointF A=polygon.operator [](polygon.size()-2);
+    QPointF B=polygon.operator [](polygon.size()-1);
+    _drawArrow(p,A,B);
+    p->save();
+    QPen pen(Qt::darkYellow);
+    pen.setWidth(5);
+    p->setPen(pen);
+    p->drawPoint(B);
+    p->restore();
 }
 
 void _drawLayer(QPainter *p, const Layer & L,qreal scale)   //画Layer
 {
+
      for(const Polygon & po : L)
      {
         QPolygonF qp;
@@ -41,8 +80,8 @@ void _drawLayer(QPainter *p, const Layer & L,qreal scale)   //画Layer
 draw::draw(QWidget *parent)
     : QWidget(parent)
 {
-    moveX=this->width()/2;
-    moveY=this->height()/2;
+//    moveX=this->width()/2*devicePixelRatio();
+//    moveY=this->height()/2*devicePixelRatio();
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
 }
@@ -69,6 +108,13 @@ void draw::setBrush(const QBrush &brush)
     update();
 }
 
+void draw::centering()
+{
+    moveX=this->width()/2*devicePixelRatio();
+    moveY=this->height()/2*devicePixelRatio();
+    update();
+}
+
 void draw::setLayer(const Layer &L)
 {   
     this->layer = L;
@@ -78,19 +124,20 @@ void draw::setLayer(const Layer &L)
 void draw::setModel(const SLCModel &M)
 {
     this->Model=M;
-    moveX=this->width()/2;
-    moveY=this->height()/2;
+    moveX=this->width()/2*devicePixelRatio();
+    moveY=this->height()/2*devicePixelRatio();
     Boundary boundary (this->Model.boundary());
     scale=(this->height()/(boundary.maxX () - boundary.minX ()));
 }
 
 void draw::paintEvent(QPaintEvent * /* event */)
 {
-
     QPainter painter(this);
     painter.setPen(pen);
     painter.setBrush(brush);
     painter.translate(moveX,moveY);
+    painter.rotate(180);  //坐标屏幕翻转
+    _drawAxis(&painter);
     _drawLayer(&painter, layer, scale);
 
 //    painter.setRenderHint(QPainter::Antialiasing, false);

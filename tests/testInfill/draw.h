@@ -23,6 +23,7 @@ public slots:
 
     void setPen(const QPen &pen);
     void setBrush(const QBrush &brush);
+    void centering();
 
 protected:
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;

@@ -1035,6 +1035,741 @@ void InfillLine(outlines TheOutline, outlines & TheResult, outlines & TheOutline
 	}
 }
 
+void InfillLineSLA(outlines TheOutline, outlines & TheResult, float width, float degree, int lunkuo,  float shrinkDistance,float offsetWidth) //自己编写的填充线生成函数。
+{
+    if(!TheOutline.empty())  //首先必须保证有数据
+    {
+        //将轮廓数据旋转一个角度
+        for (int i=0;i!=TheOutline.size();++i)
+        {
+            for (int j=0;j!=TheOutline[i].size();++j)
+            {
+                TheOutline[i][j].argument(TheOutline[i][j].argument()-degree);
+            }
+        }
+
+        //需要一次轮廓偏置来使得外轮廓比较平滑
+        std::vector<outlines> dataOffsets;  //存储所有偏置轮廓的数据
+        if(lunkuo!=0)
+        {
+            ClipperLib::ClipperOffset temO;
+            for (int i=0;i!=TheOutline.size();++i)
+            {
+                ClipperLib::Path temP;
+                for (int j=0;j!=TheOutline[i].size();++j)
+                {
+                    temP<<ClipperLib::IntPoint(TheOutline[i][j].x*1000000,TheOutline[i][j].y*1000000);
+                }
+                temO.AddPath(temP,ClipperLib::jtSquare, ClipperLib::etClosedPolygon);
+            }
+
+            for(int temi=0;temi!=lunkuo;++temi)
+            {
+                ClipperLib::Paths solution;
+                temO.Execute(solution, -offsetWidth*1000000*(temi+1));
+
+                xd::outlines dataOffset;
+                for (int i=0;i!=solution.size();++i)
+                {
+                    xd::outline temData;
+                    for (int j=0;j!=solution[i].size();++j)
+                    {
+                        temData.push_back(xd::xdpoint((float)solution[i][j].X/1000000.0,(float)solution[i][j].Y/1000000.0));
+                    }
+                    temData.push_back(xd::xdpoint((float)solution[i][0].X/1000000.0,(float)solution[i][0].Y/1000000.0));//加上最后一个点，保证封闭
+                    dataOffset.push_back(temData);
+                }
+                dataOffsets.push_back(dataOffset);
+            }
+            TheOutline.clear();
+            TheOutline=dataOffsets[dataOffsets.size()-1];
+        }
+        if(TheOutline.size()!=0)
+        {
+            //第一步，轮廓点的局部极大极小值点，放在一个双向链表中。注意：选择双向链表的原因是其任意位置删除和添加元素非常快捷，降低时间复杂度。
+            std::list<float> maxY;
+            std::list<float> minY;
+            std::vector<std::pair<float,float>> maxPoint;
+            std::vector<std::pair<float,float>> minPoint;
+            for (int i=0;i!=TheOutline.size();i++)
+            {
+                for (int j=1;j!=TheOutline[i].size();j++)
+                {
+                    int n=(int)TheOutline[i].size()-1;  //轮廓数据的最后一个点是第一个点，因此要减去1。
+                    int beforeP=(j-1+n)%n;
+                    int beforebP=(j-2+n)%n;
+                    int nextP=(j+1+n)%n;
+                    int nextnP=(j+2+n)%n;
+                    if ((TheOutline[i][j].y>TheOutline[i][beforeP].y)&&(TheOutline[i][j].y>TheOutline[i][nextP].y))  //这个点的y值大于前后的点的y值。
+                    {
+                        maxY.push_back(TheOutline[i][j].y);
+                        std::pair<float,float> tem;
+                        tem.first=TheOutline[i][j].x;
+                        tem.second=TheOutline[i][j].y;
+                        maxPoint.push_back(tem);
+                    }
+                    else if ((TheOutline[i][j].y<TheOutline[i][beforeP].y)&&(TheOutline[i][j].y<TheOutline[i][nextP].y)) //这个点的y值小于前后的点的y值。
+                    {
+                        minY.push_back(TheOutline[i][j].y);
+                        std::pair<float,float> tem;
+                        tem.first=TheOutline[i][j].x;
+                        tem.second=TheOutline[i][j].y;
+                        minPoint.push_back(tem);
+                    }
+                    else if (TheOutline[i][j].y==TheOutline[i][beforeP].y)
+                    {
+                        if ((TheOutline[i][beforeP].y>TheOutline[i][beforebP].y)&&(TheOutline[i][j].y>TheOutline[i][nextP].y)) //这个点和前一个点的y值大。
+                        {
+                            maxY.push_back(TheOutline[i][j].y);
+                        }
+                        if ((TheOutline[i][beforeP].y<TheOutline[i][beforebP].y)&&(TheOutline[i][j].y<TheOutline[i][nextP].y)) //这个点和前一个点的y值小。
+                        {
+                            minY.push_back(TheOutline[i][j].y);
+                        }
+                    }
+                    else if (TheOutline[i][j].y==TheOutline[i][nextP].y)
+                    {
+                        if ((TheOutline[i][nextP].y>TheOutline[i][nextnP].y)&&(TheOutline[i][j].y>TheOutline[i][beforeP].y))  //这个点和后一个点的y值大。
+                        {
+                            maxY.push_back(TheOutline[i][j].y);
+                        }
+                        if ((TheOutline[i][nextP].y<TheOutline[i][nextnP].y)&&(TheOutline[i][j].y<TheOutline[i][beforeP].y))  //这个点和后一个点的y值小。
+                        {
+                            minY.push_back(TheOutline[i][j].y);
+                        }
+                    }
+                }
+            }
+            maxY.sort();
+            minY.sort();
+            maxY.unique();    //将链表中重复的点删除的函数，属于STL的变易算法。
+            minY.unique();	  //同上。
+            float MaxY=*max_element(maxY.begin(),maxY.end());   //调用求链表中求最大元素的函数。
+            float MinY=*min_element(minY.begin(),minY.end());
+            //第二步，生成每一条线填充线与轮廓线的交点，分别存储在双向链表中。
+            std::vector<std::pair<float,std::list<float>>> Linedate;
+            for (int i=1;i<(MaxY-MinY)/width-1;i++)
+            {
+                std::pair<float,std::list<float>> tem;
+                tem.first=MinY+width*i;
+                Linedate.push_back(tem);
+            }
+            if(!Linedate.empty())     //记住，Linedate可能是空的！ 2015_6_17
+            {
+                if ((MaxY-Linedate[Linedate.size()-1].first)>width*3/2)//为了使得最后一根填充线不至于与轮廓离得太远，要加一个是否需要增加一条线段判断
+                {
+
+                    std::pair<float,std::list<float>> tem;
+                    tem.first=(MaxY+Linedate[Linedate.size()-1].first)/2;
+                    Linedate.push_back(tem);
+                }
+                else if ((MaxY-Linedate[Linedate.size()-1].first)<=width*3/2&&(MaxY-Linedate[Linedate.size()-1].first)>width)  //让每一条线的间距都增加一点的自适应线宽补偿
+                {
+                    for (int i=0;i!=Linedate.size();++i)
+                    {
+                        Linedate[i].first+=(MaxY-Linedate[Linedate.size()-1].first-width)/Linedate.size();
+                    }
+                }
+
+                for (int i=0;i!=TheOutline.size();i++)
+                {
+
+                    for (int j=1;j!=TheOutline[i].size();j++)  //j=1，说明要从第二个点开始循环，直到第一个点。
+                    {
+                        int n=(int)TheOutline[i].size()-1;  //轮廓数据的最后一个点是第一个点，因此要减去1。
+                        int beforeP=(j-1+n)%n;
+                        int beforebP=(j-2+n)%n;
+                        int nextP=(j+1+n)%n;
+                        int nextnP=(j+2+n)%n;
+                        if (TheOutline[i][j].y!=TheOutline[i][nextP].y) //轮廓线段不平行于x轴的情况。
+                        {
+                            for (int k=0;k!=Linedate.size();k++)
+                            {
+                                if ((Linedate[k].first-TheOutline[i][j].y)*(Linedate[k].first-TheOutline[i][nextP].y)<0) //线与轮廓线段相交的情况。
+                                {
+                                    float x1=TheOutline[i][j].x;
+                                    float x2=TheOutline[i][nextP].x;
+                                    float y1=TheOutline[i][j].y;
+                                    float y2=TheOutline[i][nextP].y;
+                                    Linedate[k].second.push_back((x2-x1)/(y2-y1)*(Linedate[k].first-y1)+x1);
+                                }
+                                else if ((Linedate[k].first==TheOutline[i][j].y))    //线与轮廓线段前一个顶点相交的情况。
+                                {
+                                    if ((!IsContainPoint(maxPoint,TheOutline[i][j]))&&(!IsContainPoint(minPoint,TheOutline[i][j]))&&(TheOutline[i][j].y!=TheOutline[i][beforeP].y))
+                                    {
+                                        //这个顶点同时又不是极值点时。同时这个点与前一个点的y值都不相等才行，因为相等时的情况已经已经被后面的逻辑考虑过了！！！
+                                        Linedate[k].second.push_back(TheOutline[i][j].x);
+                                    }
+                                }
+                                else if ((Linedate[k].first==TheOutline[i][nextP].y))   //线与轮廓线段后一个顶点相交的情况。
+                                {
+                                    if ((!IsContainPoint(maxPoint,TheOutline[i][nextP]))&&(!IsContainPoint(minPoint,TheOutline[i][nextP]))&&(TheOutline[i][nextP].y!=TheOutline[i][nextnP].y))
+                                    {
+                                        //这个顶点同时又不是极值点时。同时后一个点与后后一个点的y值都不相等才行，因为相等时的情况已经已经被后面的逻辑考虑过了！！！
+                                        Linedate[k].second.push_back(TheOutline[i][nextP].x);
+                                    }
+                                }
+                            }
+                        }
+                        else if(TheOutline[i][j].y==TheOutline[i][nextP].y) //轮廓线段平行于x轴的情况。
+                        {
+                            for (int k=0;k!=Linedate.size();k++)
+                            {
+                                if (Linedate[k].first==TheOutline[i][j].y)  //有填充线恰好与平行于x轴的轮廓线相交。
+                                {
+                                    if((IsLeft(TheOutline[i][beforeP],TheOutline[i][j],TheOutline[i][nextP])==-1)&&(IsLeft(TheOutline[i][j],TheOutline[i][nextP],TheOutline[i][nextnP])==-1))  //这个轮廓线的两点同时是内点时。
+                                    {   //顺时针向右转是内点。
+                                        Linedate[k].second.push_back(TheOutline[i][j].x);
+                                        Linedate[k].second.push_back(TheOutline[i][nextP].x);
+                                    }
+                                    else if((IsLeft(TheOutline[i][beforeP],TheOutline[i][j],TheOutline[i][nextP])==1)&&(IsLeft(TheOutline[i][j],TheOutline[i][nextP],TheOutline[i][nextnP])==1))
+                                    {
+                                        //两个点都不是内点，两点都舍去，换句话说就是什么也不做，其实不用写这段代码，为了以后好理解所以写上了。
+                                    }
+
+                                    else if((IsLeft(TheOutline[i][beforeP],TheOutline[i][j],TheOutline[i][nextP])==-1)&&(IsLeft(TheOutline[i][j],TheOutline[i][nextP],TheOutline[i][nextnP])==1))
+                                    {
+                                        Linedate[k].second.push_back(TheOutline[i][j].x);
+                                    }
+                                    else if((IsLeft(TheOutline[i][beforeP],TheOutline[i][j],TheOutline[i][nextP])==1)&&(IsLeft(TheOutline[i][j],TheOutline[i][nextP],TheOutline[i][nextnP])==-1))
+                                    {
+                                        Linedate[k].second.push_back(TheOutline[i][nextP].x);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                for(int i=0;i!=Linedate.size();i++)  //将存储好的数据重复的元素删除，并且排序。
+                {
+                    Linedate[i].second.sort();    //排序。
+                    Linedate[i].second.unique();  //将多余的点取出来。
+                }
+                DeleteOddDate(Linedate);    //暂时加上，看看情况！
+
+                //第三步，将数据分区域存放。
+                int FirstNonZero;
+                while(!IsEmpty(Linedate,FirstNonZero))
+                {
+                    outline tem;
+                    int j=0;  //用来判断是奇数行还是偶数行的参数。
+                    auto firstIn=Linedate[FirstNonZero].second.begin();
+                    float bijiao1=*firstIn;   //第一条线的第一个点。
+                    tem.push_back(xdpoint(*firstIn,Linedate[FirstNonZero].first,TheOutline[0][0].z));
+                    tem.push_back(xdpoint(*(++firstIn),Linedate[FirstNonZero].first,TheOutline[0][0].z));
+                    int i=(FirstNonZero+1)%Linedate.size();  //必须保证当第一个非零数据的线刚好是最后一条线时也不会加1越界！所以要模一下！
+                    float bijiao2=*firstIn;  //第一条线的第二个点。
+                    float bijiaoY1=Linedate[FirstNonZero].first;  //第一条线的Y坐标值。
+                    auto tem1s=Linedate[FirstNonZero].second.begin();
+                    auto tem1e=tem1s;
+                    tem1e++;
+                    tem1e++;
+                    Linedate[FirstNonZero].second.erase(tem1s,tem1e);
+                    if (std::abs(tem[1].x - tem[0].x)<shrinkDistance*2)  //如果两个点的距离太近了，则不用填充了！！important！！！
+                        continue;
+                    while ((!Linedate[i].second.empty()))
+                    {
+                        auto Line2first=Linedate[i].second.begin();  //第二条线的第一个点。
+
+                        float bijiaoY2=Linedate[i].first; //第二个条直线的Y坐标值。
+                        if (exceedExtremum(bijiaoY1,bijiaoY2,maxY,minY))
+                        {
+                            //前后两条直线如果跨越了局部极值点，也需要退出，即需要分区。
+                            break;
+                        }
+                        bijiaoY1=bijiaoY2;
+                        if(*Line2first>bijiao2)
+                        {
+                            //第二条直线的第一个点大于第一条直线的第二个点则退出，即需要分区
+                            break;
+                        }
+                        if (*(++Line2first)<bijiao1)   //注意：这里++必须在前，因为就算有括号，++在后的话也会比较完再++！！！
+                        {
+                            //第二条直线的第二个点小于第一条直线的第一个点则退出，即需要分区
+                            break;
+                        }
+                        auto tem2s=Linedate[i].second.begin();
+                        auto tem2e=tem2s;
+                        tem2e++;
+                        if (std::abs(*tem2e - *tem2s)<shrinkDistance*2)//如果两个点的距离太近了，则不用填充了！！important！！！
+                            break;
+                        if (j%2==0)
+                        {
+                            /*auto tem2s=Linedate[i].second.begin();
+                            auto tem2e=tem2s;
+                            tem2e++;*/
+                            float vectorY=Linedate[i].first-tem.back().y;
+                            float vectorX=*tem2e-tem.back().x;
+                            if (abs(vectorY/sqrt(pow(vectorX,2)+pow(vectorY,2)))<sin(5.0/180*pi))   //连接线和水平线相差1度就分区，记得用1.0
+                            {
+                                break;
+                            }
+                            tem.push_back(xdpoint(*tem2e,Linedate[i].first,TheOutline[0][0].z));
+                            tem.push_back(xdpoint(*tem2s,Linedate[i].first,TheOutline[0][0].z));
+                        }
+                        else
+                        {
+                            /*auto tem2s=Linedate[i].second.begin();
+                            auto tem2e=tem2s;
+                            tem2e++;*/
+                            float vectorY=Linedate[i].first-tem.back().y;
+                            float vectorX=*tem2s-tem.back().x;
+                            if (abs(vectorY/sqrt(pow(vectorX,2)+pow(vectorY,2)))<sin(5.0/180*pi))   //连接线和水平线相差1度就分区，记得用1.0
+                            {
+                                break;
+                            }
+                            tem.push_back(xdpoint(*tem2s,Linedate[i].first,TheOutline[0][0].z));
+                            tem.push_back(xdpoint(*tem2e,Linedate[i].first,TheOutline[0][0].z));
+                        }
+                        auto tem3s=Linedate[i].second.begin();
+                        auto tem3e=tem3s;
+                        bijiao1=*tem3e;
+                        tem3e++;
+                        bijiao2=*tem3e;
+                        tem3e++;
+                        Linedate[i].second.erase(tem3s,tem3e);
+                        ++j;
+                        ++i;
+                        if (i==Linedate.size())
+                        {
+                            break;
+                        }
+                    }
+                    TheResult.push_back(tem);
+                }
+
+                //每个线段要缩短一个半径补偿
+                for (int i=0;i!=TheResult.size();++i)
+                {
+                    for (int j=0;j!=TheResult[i].size();++j)
+                    {
+
+                        if (j%4==3||j%4==0)
+                        {
+                            TheResult[i][j].x += shrinkDistance;    //此处是默认值。
+
+                        }
+                        else
+                        {
+                            TheResult[i][j].x -= shrinkDistance;
+                        }
+                    }
+                }
+                //为了适应SLA，每个点都要分开加入！
+                outlines temS;
+                for(const outline & ol : TheResult)
+                {
+                    if(ol.size()==2)
+                        temS.push_back(ol);
+                    else
+                        for(int i=0 ; i < ol.size() ; i+=2)
+                        {
+                            outline tem;
+                            tem.push_back(ol[i]);
+                            tem.push_back(ol[i+1]);
+                            temS.push_back(tem);
+                        }
+                }
+                TheResult.clear();
+                TheResult.insert(TheResult.end(),temS.begin(),temS.end());
+            }
+        }
+
+        //记得最后加上偏置轮廓。
+        if(lunkuo!=0)
+        {
+            for(int i=0;i!=dataOffsets.size();++i)
+            {
+                for(int j=0;j!=dataOffsets[i].size();++j)
+                {
+                    TheResult.insert(TheResult.begin(),dataOffsets[i][j]);
+                }
+            }
+        }
+        //填充线的结果转回选择角度
+        for (int i=0;i!=TheResult.size();++i)
+        {
+            for (int j=0;j!=TheResult[i].size();++j)
+            {
+                TheResult[i][j].argument(TheResult[i][j].argument()+degree);
+            }
+        }
+    }
+}
+
+void InfillLineSLA(outlines TheOutline, outlines & TheResult, outlines & TheOutlineResult, float width, float degree, int lunkuo, float shrinkDistance, float offsetWidth)
+{
+    if (!TheOutline.empty())  //首先必须保证有数据
+    {
+        //将轮廓数据旋转一个角度
+        for (int i = 0; i != TheOutline.size(); ++i)
+        {
+            for (int j = 0; j != TheOutline[i].size(); ++j)
+            {
+                TheOutline[i][j].argument(TheOutline[i][j].argument() - degree);
+            }
+        }
+
+        //需要一次轮廓偏置来使得外轮廓比较平滑
+        std::vector<outlines> dataOffsets;  //存储所有偏置轮廓的数据
+        if (lunkuo != 0)
+        {
+            ClipperLib::ClipperOffset temO;
+            for (int i = 0; i != TheOutline.size(); ++i)
+            {
+                ClipperLib::Path temP;
+                for (int j = 0; j != TheOutline[i].size(); ++j)
+                {
+                    temP << ClipperLib::IntPoint(TheOutline[i][j].x * 1000000, TheOutline[i][j].y * 1000000);
+                }
+                temO.AddPath(temP, ClipperLib::jtSquare, ClipperLib::etClosedPolygon);
+            }
+
+            for (int temi = 0; temi != lunkuo; ++temi)
+            {
+                ClipperLib::Paths solution;
+                temO.Execute(solution, -offsetWidth * 1000000 * (temi + 1));
+
+                xd::outlines dataOffset;
+                for (int i = 0; i != solution.size(); ++i)
+                {
+                    xd::outline temData;
+                    for (int j = 0; j != solution[i].size(); ++j)
+                    {
+                        temData.push_back(xd::xdpoint((float)solution[i][j].X / 1000000.0, (float)solution[i][j].Y / 1000000.0));
+                    }
+                    temData.push_back(xd::xdpoint((float)solution[i][0].X / 1000000.0, (float)solution[i][0].Y / 1000000.0));//加上最后一个点，保证封闭
+                    dataOffset.push_back(temData);
+                }
+                dataOffsets.push_back(dataOffset);
+            }
+            TheOutline.clear();
+            TheOutline = dataOffsets[dataOffsets.size() - 1];
+        }
+        if (TheOutline.size() != 0)
+        {
+            //第一步，轮廓点的局部极大极小值点，放在一个双向链表中。注意：选择双向链表的原因是其任意位置删除和添加元素非常快捷，降低时间复杂度。
+            std::list<float> maxY;
+            std::list<float> minY;
+            std::vector<std::pair<float, float>> maxPoint;
+            std::vector<std::pair<float, float>> minPoint;
+            for (int i = 0; i != TheOutline.size(); i++)
+            {
+                for (int j = 1; j != TheOutline[i].size(); j++)
+                {
+                    int n = (int)TheOutline[i].size() - 1;  //轮廓数据的最后一个点是第一个点，因此要减去1。
+                    int beforeP = (j - 1 + n) % n;
+                    int beforebP = (j - 2 + n) % n;
+                    int nextP = (j + 1 + n) % n;
+                    int nextnP = (j + 2 + n) % n;
+                    if ((TheOutline[i][j].y>TheOutline[i][beforeP].y) && (TheOutline[i][j].y>TheOutline[i][nextP].y))  //这个点的y值大于前后的点的y值。
+                    {
+                        maxY.push_back(TheOutline[i][j].y);
+                        std::pair<float, float> tem;
+                        tem.first = TheOutline[i][j].x;
+                        tem.second = TheOutline[i][j].y;
+                        maxPoint.push_back(tem);
+                    }
+                    else if ((TheOutline[i][j].y<TheOutline[i][beforeP].y) && (TheOutline[i][j].y<TheOutline[i][nextP].y)) //这个点的y值小于前后的点的y值。
+                    {
+                        minY.push_back(TheOutline[i][j].y);
+                        std::pair<float, float> tem;
+                        tem.first = TheOutline[i][j].x;
+                        tem.second = TheOutline[i][j].y;
+                        minPoint.push_back(tem);
+                    }
+                    else if (TheOutline[i][j].y == TheOutline[i][beforeP].y)
+                    {
+                        if ((TheOutline[i][beforeP].y>TheOutline[i][beforebP].y) && (TheOutline[i][j].y>TheOutline[i][nextP].y)) //这个点和前一个点的y值大。
+                        {
+                            maxY.push_back(TheOutline[i][j].y);
+                        }
+                        if ((TheOutline[i][beforeP].y<TheOutline[i][beforebP].y) && (TheOutline[i][j].y<TheOutline[i][nextP].y)) //这个点和前一个点的y值小。
+                        {
+                            minY.push_back(TheOutline[i][j].y);
+                        }
+                    }
+                    else if (TheOutline[i][j].y == TheOutline[i][nextP].y)
+                    {
+                        if ((TheOutline[i][nextP].y>TheOutline[i][nextnP].y) && (TheOutline[i][j].y>TheOutline[i][beforeP].y))  //这个点和后一个点的y值大。
+                        {
+                            maxY.push_back(TheOutline[i][j].y);
+                        }
+                        if ((TheOutline[i][nextP].y<TheOutline[i][nextnP].y) && (TheOutline[i][j].y<TheOutline[i][beforeP].y))  //这个点和后一个点的y值小。
+                        {
+                            minY.push_back(TheOutline[i][j].y);
+                        }
+                    }
+                }
+            }
+            maxY.sort();
+            minY.sort();
+            maxY.unique();    //将链表中重复的点删除的函数，属于STL的变易算法。
+            minY.unique();	  //同上。
+            float MaxY = *max_element(maxY.begin(), maxY.end());   //调用求链表中求最大元素的函数。
+            float MinY = *min_element(minY.begin(), minY.end());
+            //第二步，生成每一条线填充线与轮廓线的交点，分别存储在双向链表中。
+            std::vector<std::pair<float, std::list<float>>> Linedate;
+            for (int i = 1; i<(MaxY - MinY) / width - 1; i++)
+            {
+                std::pair<float, std::list<float>> tem;
+                tem.first = MinY + width*i;
+                Linedate.push_back(tem);
+            }
+            if (!Linedate.empty())     //记住，Linedate可能是空的！ 2015_6_17
+            {
+                if ((MaxY - Linedate[Linedate.size() - 1].first)>width * 3 / 2)//为了使得最后一根填充线不至于与轮廓离得太远，要加一个是否需要增加一条线段判断
+                {
+
+                    std::pair<float, std::list<float>> tem;
+                    tem.first = (MaxY + Linedate[Linedate.size() - 1].first) / 2;
+                    Linedate.push_back(tem);
+                }
+                else if ((MaxY - Linedate[Linedate.size() - 1].first) <= width * 3 / 2 && (MaxY - Linedate[Linedate.size() - 1].first)>width)  //让每一条线的间距都增加一点的自适应线宽补偿
+                {
+                    for (int i = 0; i != Linedate.size(); ++i)
+                    {
+                        Linedate[i].first += (MaxY - Linedate[Linedate.size() - 1].first - width) / Linedate.size();
+                    }
+                }
+
+                for (int i = 0; i != TheOutline.size(); i++)
+                {
+
+                    for (int j = 1; j != TheOutline[i].size(); j++)  //j=1，说明要从第二个点开始循环，直到第一个点。
+                    {
+                        int n = (int)TheOutline[i].size() - 1;  //轮廓数据的最后一个点是第一个点，因此要减去1。
+                        int beforeP = (j - 1 + n) % n;
+                        int beforebP = (j - 2 + n) % n;
+                        int nextP = (j + 1 + n) % n;
+                        int nextnP = (j + 2 + n) % n;
+                        if (TheOutline[i][j].y != TheOutline[i][nextP].y) //轮廓线段不平行于x轴的情况。
+                        {
+                            for (int k = 0; k != Linedate.size(); k++)
+                            {
+                                if ((Linedate[k].first - TheOutline[i][j].y)*(Linedate[k].first - TheOutline[i][nextP].y)<0) //线与轮廓线段相交的情况。
+                                {
+                                    float x1 = TheOutline[i][j].x;
+                                    float x2 = TheOutline[i][nextP].x;
+                                    float y1 = TheOutline[i][j].y;
+                                    float y2 = TheOutline[i][nextP].y;
+                                    Linedate[k].second.push_back((x2 - x1) / (y2 - y1)*(Linedate[k].first - y1) + x1);
+                                }
+                                else if ((Linedate[k].first == TheOutline[i][j].y))    //线与轮廓线段前一个顶点相交的情况。
+                                {
+                                    if ((!IsContainPoint(maxPoint, TheOutline[i][j])) && (!IsContainPoint(minPoint, TheOutline[i][j])) && (TheOutline[i][j].y != TheOutline[i][beforeP].y))
+                                    {
+                                        //这个顶点同时又不是极值点时。同时这个点与前一个点的y值都不相等才行，因为相等时的情况已经已经被后面的逻辑考虑过了！！！
+                                        Linedate[k].second.push_back(TheOutline[i][j].x);
+                                    }
+                                }
+                                else if ((Linedate[k].first == TheOutline[i][nextP].y))   //线与轮廓线段后一个顶点相交的情况。
+                                {
+                                    if ((!IsContainPoint(maxPoint, TheOutline[i][nextP])) && (!IsContainPoint(minPoint, TheOutline[i][nextP])) && (TheOutline[i][nextP].y != TheOutline[i][nextnP].y))
+                                    {
+                                        //这个顶点同时又不是极值点时。同时后一个点与后后一个点的y值都不相等才行，因为相等时的情况已经已经被后面的逻辑考虑过了！！！
+                                        Linedate[k].second.push_back(TheOutline[i][nextP].x);
+                                    }
+                                }
+                            }
+                        }
+                        else if (TheOutline[i][j].y == TheOutline[i][nextP].y) //轮廓线段平行于x轴的情况。
+                        {
+                            for (int k = 0; k != Linedate.size(); k++)
+                            {
+                                if (Linedate[k].first == TheOutline[i][j].y)  //有填充线恰好与平行于x轴的轮廓线相交。
+                                {
+                                    if ((IsLeft(TheOutline[i][beforeP], TheOutline[i][j], TheOutline[i][nextP]) == -1) && (IsLeft(TheOutline[i][j], TheOutline[i][nextP], TheOutline[i][nextnP]) == -1))  //这个轮廓线的两点同时是内点时。
+                                    {   //顺时针向右转是内点。
+                                        Linedate[k].second.push_back(TheOutline[i][j].x);
+                                        Linedate[k].second.push_back(TheOutline[i][nextP].x);
+                                    }
+                                    else if ((IsLeft(TheOutline[i][beforeP], TheOutline[i][j], TheOutline[i][nextP]) == 1) && (IsLeft(TheOutline[i][j], TheOutline[i][nextP], TheOutline[i][nextnP]) == 1))
+                                    {
+                                        //两个点都不是内点，两点都舍去，换句话说就是什么也不做，其实不用写这段代码，为了以后好理解所以写上了。
+                                    }
+
+                                    else if ((IsLeft(TheOutline[i][beforeP], TheOutline[i][j], TheOutline[i][nextP]) == -1) && (IsLeft(TheOutline[i][j], TheOutline[i][nextP], TheOutline[i][nextnP]) == 1))
+                                    {
+                                        Linedate[k].second.push_back(TheOutline[i][j].x);
+                                    }
+                                    else if ((IsLeft(TheOutline[i][beforeP], TheOutline[i][j], TheOutline[i][nextP]) == 1) && (IsLeft(TheOutline[i][j], TheOutline[i][nextP], TheOutline[i][nextnP]) == -1))
+                                    {
+                                        Linedate[k].second.push_back(TheOutline[i][nextP].x);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                for (int i = 0; i != Linedate.size(); i++)  //将存储好的数据重复的元素删除，并且排序。
+                {
+                    Linedate[i].second.sort();    //排序。
+                    Linedate[i].second.unique();  //将多余的点取出来。
+                }
+                DeleteOddDate(Linedate);    //暂时加上，看看情况！
+
+                //第三步，将数据分区域存放。
+                int FirstNonZero;
+                while (!IsEmpty(Linedate, FirstNonZero))
+                {
+                    outline tem;
+                    int j = 0;  //用来判断是奇数行还是偶数行的参数。
+                    auto firstIn = Linedate[FirstNonZero].second.begin();
+                    float bijiao1 = *firstIn;   //第一条线的第一个点。
+                    tem.push_back(xdpoint(*firstIn, Linedate[FirstNonZero].first, TheOutline[0][0].z));
+                    tem.push_back(xdpoint(*(++firstIn), Linedate[FirstNonZero].first, TheOutline[0][0].z));
+                    int i = (FirstNonZero + 1) % Linedate.size();  //必须保证当第一个非零数据的线刚好是最后一条线时也不会加1越界！所以要模一下！
+                    float bijiao2 = *firstIn;  //第一条线的第二个点。
+                    float bijiaoY1 = Linedate[FirstNonZero].first;  //第一条线的Y坐标值。
+                    auto tem1s = Linedate[FirstNonZero].second.begin();
+                    auto tem1e = tem1s;
+                    tem1e++;
+                    tem1e++;
+                    Linedate[FirstNonZero].second.erase(tem1s, tem1e);
+                    if (std::abs(tem[1].x - tem[0].x)<shrinkDistance * 2)  //如果两个点的距离太近了，则不用填充了！！important！！！
+                        continue;
+                    while ((!Linedate[i].second.empty()))
+                    {
+                        auto Line2first = Linedate[i].second.begin();  //第二条线的第一个点。
+
+                        float bijiaoY2 = Linedate[i].first; //第二个条直线的Y坐标值。
+                        if (exceedExtremum(bijiaoY1, bijiaoY2, maxY, minY))
+                        {
+                            //前后两条直线如果跨越了局部极值点，也需要退出，即需要分区。
+                            break;
+                        }
+                        bijiaoY1 = bijiaoY2;
+                        if (*Line2first>bijiao2)
+                        {
+                            //第二条直线的第一个点大于第一条直线的第二个点则退出，即需要分区
+                            break;
+                        }
+                        if (*(++Line2first)<bijiao1)   //注意：这里++必须在前，因为就算有括号，++在后的话也会比较完再++！！！
+                        {
+                            //第二条直线的第二个点小于第一条直线的第一个点则退出，即需要分区
+                            break;
+                        }
+                        auto tem2s = Linedate[i].second.begin();
+                        auto tem2e = tem2s;
+                        tem2e++;
+                        if (std::abs(*tem2e - *tem2s)<shrinkDistance * 2)//如果两个点的距离太近了，则不用填充了！！important！！！
+                            break;
+                        if (j % 2 == 0)
+                        {
+                            /*auto tem2s=Linedate[i].second.begin();
+                            auto tem2e=tem2s;
+                            tem2e++;*/
+                            float vectorY = Linedate[i].first - tem.back().y;
+                            float vectorX = *tem2e - tem.back().x;
+                            if (abs(vectorY / sqrt(pow(vectorX, 2) + pow(vectorY, 2)))<sin(5.0 / 180 * pi))   //连接线和水平线相差1度就分区，记得用1.0
+                            {
+                                break;
+                            }
+                            tem.push_back(xdpoint(*tem2e, Linedate[i].first, TheOutline[0][0].z));
+                            tem.push_back(xdpoint(*tem2s, Linedate[i].first, TheOutline[0][0].z));
+                        }
+                        else
+                        {
+                            /*auto tem2s=Linedate[i].second.begin();
+                            auto tem2e=tem2s;
+                            tem2e++;*/
+                            float vectorY = Linedate[i].first - tem.back().y;
+                            float vectorX = *tem2s - tem.back().x;
+                            if (abs(vectorY / sqrt(pow(vectorX, 2) + pow(vectorY, 2)))<sin(5.0 / 180 * pi))   //连接线和水平线相差1度就分区，记得用1.0
+                            {
+                                break;
+                            }
+                            tem.push_back(xdpoint(*tem2s, Linedate[i].first, TheOutline[0][0].z));
+                            tem.push_back(xdpoint(*tem2e, Linedate[i].first, TheOutline[0][0].z));
+                        }
+                        auto tem3s = Linedate[i].second.begin();
+                        auto tem3e = tem3s;
+                        bijiao1 = *tem3e;
+                        tem3e++;
+                        bijiao2 = *tem3e;
+                        tem3e++;
+                        Linedate[i].second.erase(tem3s, tem3e);
+                        ++j;
+                        ++i;
+                        if (i == Linedate.size())
+                        {
+                            break;
+                        }
+                    }
+                    TheResult.push_back(tem);
+                }
+
+                //每个线段要缩短一个半径补偿
+                for (int i = 0; i != TheResult.size(); ++i)
+                {
+                    for (int j = 0; j != TheResult[i].size(); ++j)
+                    {
+
+                        if (j % 4 == 3 || j % 4 == 0)
+                        {
+                            TheResult[i][j].x += shrinkDistance;    //此处是默认值。
+
+                        }
+                        else
+                        {
+                            TheResult[i][j].x -= shrinkDistance;
+                        }
+                    }
+                }
+                //为了适应SLA，每个点都要分开加入！
+                outlines temS;
+                for(const outline & ol : TheResult)
+                {
+                    if(ol.size()==2)
+                        temS.push_back(ol);
+                    else
+                        for(int i=0 ; i < ol.size() ; i+=2)
+                        {
+                            outline tem;
+                            tem.push_back(ol[i]);
+                            tem.push_back(ol[i+1]);
+                            temS.push_back(tem);
+                        }
+                }
+                TheResult.clear();
+                TheResult.insert(TheResult.end(),temS.begin(),temS.end());
+            }
+        }
+
+        //记得最后加上偏置轮廓。
+        if (lunkuo != 0)
+        {
+            for (int i = 0; i != dataOffsets.size(); ++i)
+            {
+                for (int j = 0; j != dataOffsets[i].size(); ++j)
+                {
+                    TheOutlineResult.insert(TheOutlineResult.begin(), dataOffsets[i][j]);
+                }
+            }
+        }
+        //填充线的结果转回选择角度
+        for (int i = 0; i != TheResult.size(); ++i)
+        {
+            for (int j = 0; j != TheResult[i].size(); ++j)
+            {
+                TheResult[i][j].argument(TheResult[i][j].argument() + degree);
+            }
+        }
+        for (int i = 0; i != TheOutlineResult.size(); ++i)
+        {
+            for (int j = 0; j != TheOutlineResult[i].size(); ++j)
+            {
+                TheOutlineResult[i][j].argument(TheOutlineResult[i][j].argument() + degree);
+            }
+        }
+    }
+}
+
 void notInfillLine(outlines TheOutline, outlines & TheResult, outlines & TheOutlineResult, float width, float degree, int lunkuo, float shrinkDistance, float offsetWidth)//不分区的填充算法，为了加速
 {
 	if (!TheOutline.empty())  //首先必须保证有数据
@@ -1293,6 +2028,8 @@ void notInfillLine(outlines TheOutline, outlines & TheResult, outlines & TheOutl
 		}
 	}
 }
+
+
 
 void InfillConcentric(outlines TheOutline, outlines & TheResult, outlines & TheOutlineResult, float width, int lunkuo,  float offsetWidth) //自己编写的同心填充函数
 {
@@ -2249,7 +2986,7 @@ void OutlinesClipperMethod(std::vector<xd::outlines> theOutline,std::vector<xd::
 		temPush.push_back(xd::xdpoint(areaA[i][0].X/1000000.0,areaA[i][0].Y/1000000.0));  //加上最后一个点，保证封闭
 		outlinesIn.push_back(temPush);
 	}
-	xd::InfillLine(outlinesIn,outlinesO,width,degree,0,shrinkDistance,width);
+    xd::InfillLineSLA(outlinesIn,outlinesO,width,degree,0,shrinkDistance,width);
 	for (int i=0;i!=outlinesO.size();++i)
 	{
 		std::pair<outline,unsigned int> temPair;

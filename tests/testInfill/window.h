@@ -60,6 +60,7 @@ private:
     QPushButton *save;
     QPushButton *clear;
     QPushButton *infill;
+    QPushButton *centering;
 };
 //! [0]
 

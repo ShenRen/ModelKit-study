@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    SLCModel m;
+    //SLCModel m;
 //    QElapsedTimer t2;
 //    t2.start ();
 //    for (int i = 0; i < 4; ++i)
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 //        qDebug () << _model.boundary ();
 //        m.merge (_model);
 //    }
-    m.readFile (QString ("C:/Users/Administrator/Desktop/tank.slc"));
+   // m.readFile (QString ("C:/Users/Administrator/Desktop/tank.slc"));
 
 //    qDebug () << double (t2.nsecsElapsed ()) / 1e9;
 
@@ -55,6 +55,8 @@ int main(int argc, char *argv[])
     //qDebug() << "finished record time.";
     Window bb;
     bb.show();
+
+
 
     return a.exec ();
 }

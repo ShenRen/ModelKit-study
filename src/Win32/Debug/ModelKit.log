@@ -1,20 +1,9 @@
-﻿生成启动时间为 2015/12/4 15:12:09。
+﻿生成启动时间为 2015/12/5 10:04:47。
      1>项目“F:\qt\ModelKit-study\src\ModelKit.vcxproj”在节点 2 上(Build 个目标)。
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I. /I..\include /I..\3rdparty /ID:\qt\qt5.5.0\5.5\msvc2013\include /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtCore /Idebug /I"D:\qt\qt5.5.0\5.5\msvc2013\mkspecs\win32-msvc2013" /Zi /nologo /W3 /WX- /Od /Oy- /D _WINDOWS /D UNICODE /D WIN32 /D QT_CORE_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt -w34100 -w34189 -w44996 ..\3rdparty\clipper\clipper.cpp
-         clipper.cpp
-       Lib:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"..\bin\\ModelKit.lib" /NOLOGO Win32\Debug\boundary.obj
-         Win32\Debug\clipper.obj
-         Win32\Debug\generate_line.obj
-         Win32\Debug\infill.obj
-         Win32\Debug\layer.obj
-         Win32\Debug\point.obj
-         Win32\Debug\polygon.obj
-         Win32\Debug\slcmodel.obj
+     1>Lib:
          ModelKit.vcxproj -> F:\qt\ModelKit-study\src\..\bin\ModelKit.lib
      1>已完成生成项目“F:\qt\ModelKit-study\src\ModelKit.vcxproj”(Build 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:01.56
+已用时间 00:00:00.16

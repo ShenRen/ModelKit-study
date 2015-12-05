@@ -6,15 +6,6 @@
 
 Window::Window()
 {
-    /*
-     * void skin_core_infill(int interval_num,
-     *                       float space,
-     *                       float shrinkDistance,
-     *                       float angle_start,
-     *                       float angle_delta,
-     *                       qreal LaserPower=-1.0,
-     *                       qreal ScanSpeed=-1.0);
-     */
     drawArea = new draw;
     model = new XJRP::SLCModel;
     //用来显示层的SpinBox
@@ -52,6 +43,7 @@ Window::Window()
     save = new QPushButton(tr("&save"));
     clear = new QPushButton(tr("&clear"));
     infill = new QPushButton(tr("&infill"));
+    centering = new QPushButton(tr("center"));
     connect(open,SIGNAL(clicked()),
             this,SLOT(openTrigger()));
     connect(save,SIGNAL(clicked()),
@@ -60,6 +52,8 @@ Window::Window()
             this,SLOT(clearTrigger()));
     connect(infill,SIGNAL(clicked()),
             this,SLOT(infillTrigger()));
+     connect(centering,SIGNAL(clicked()),
+            drawArea,SLOT(centering()));
     //布局
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->setColumnStretch(0, 1);
@@ -71,6 +65,7 @@ Window::Window()
     mainLayout->addWidget(LayerNum, 2, 3);
     mainLayout->addWidget(infill, 2, 4);
     mainLayout->addWidget(save, 2, 5);
+    mainLayout->addWidget(centering,2,6);
     mainLayout->addWidget(interval_numLabel,3,0);
     mainLayout->addWidget(interval_numEdit,3,1);
     mainLayout->addWidget(spaceLabel,3,2);
@@ -90,6 +85,7 @@ Window::Window()
     setWindowTitle(tr("SLC Read And Infill"));
     infill->hide();
     save->hide();
+    centering->hide();
 }
 
 void Window::LayerChanged()
@@ -114,17 +110,19 @@ void Window::openTrigger()
     LayerNum->setRange(1,this->model->size());
     LayerNum->setSpecialValueText(tr("1 (Layer Number)"));
     infill->show();
+    centering->show();
 }
 void Window::saveTrigger()
 {
-    QString fileName = QFileDialog::getSaveFileName(this,tr("Save a XJ file"),tr("/select .XJ file please"),tr("slicing file(*.XJ)"));
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Save a XJ file"),"/home/jana/untitled.XJ",tr("slicing file(*.XJ)"));
     if(fileName.length()==0)
         return;
-//    QFile file(fileName);
-//    for(const XJRP::Layer & L : *(this->model))
-//    {
-//        file<<L;
-//    }
+    QFile file(fileName);
+    if(!file.open(QIODevice::WriteOnly))
+        return;
+    QDataStream temS(&file);
+    temS<<*(QList<XJRP::Layer> *)(this->model);
+    file.close();
 }
 void Window::clearTrigger()
 {
@@ -133,10 +131,21 @@ void Window::clearTrigger()
     LayerNum->setSpecialValueText(tr("0 (No Model)"));
     infill->hide();
     save->hide();
+    centering->hide();
 }
 void Window::infillTrigger()
 {
-    infill->show();
+//    for(int i=0 ; i < this->model->size();++i)
+//    {
+//        for(int j=0; j < this->model->operator[](i).size();++j)
+//        {
+//            if(this->model->operator [](i)[j].type()==XJRP::Polygon::PolygonType::Infill)
+//            {
+//                this->model->operator [](i).erase(this->model->operator [](i).begin()+j);
+//                --j;
+//            }
+//        }
+//    }
     this->model->skin_core_infill(interval_numEdit->text().toInt(),
                                   spaceEdit->text().toFloat(),
                                   shrinkDistanceEdit->text().toFloat(),
