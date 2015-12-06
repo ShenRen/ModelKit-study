@@ -34,6 +34,10 @@ void _drawAxis(QPainter *p)
     p->drawLine(yNegative,yPositive);
     _drawArrow(p,xNegative,xPositive);
     _drawArrow(p,yNegative,yPositive);
+    QPen pen(Qt::darkRed);
+    pen.setWidth(5);
+    p->setPen(pen);
+    p->drawPoint(QPointF(0,0));
 }
 
 void _drawPolygon(QPainter *p, const QPolygonF &polygon, qreal scale)  //画QPolygonF
@@ -43,12 +47,11 @@ void _drawPolygon(QPainter *p, const QPolygonF &polygon, qreal scale)  //画QPoly
     QPointF A=polygon.operator [](polygon.size()-2);
     QPointF B=polygon.operator [](polygon.size()-1);
     _drawArrow(p,A,B);
-    p->save();
+    //下面是强调起点的标志
     QPen pen(Qt::darkYellow);
-    pen.setWidth(5);
+    pen.setWidth(4);
     p->setPen(pen);
-    p->drawPoint(B);
-    p->restore();
+    p->drawPoint(polygon.front());
 }
 
 void _drawLayer(QPainter *p, const Layer & L,qreal scale)   //画Layer
@@ -96,18 +99,6 @@ QSize draw::sizeHint() const
     return QSize(800, 400);
 }
 
-void draw::setPen(const QPen &pen)
-{
-    this->pen = pen;
-    update();
-}
-
-void draw::setBrush(const QBrush &brush)
-{
-    this->brush = brush;
-    update();
-}
-
 void draw::centering()
 {
     moveX=this->width()/2*devicePixelRatio();
@@ -136,7 +127,7 @@ void draw::paintEvent(QPaintEvent * /* event */)
     painter.setPen(pen);
     painter.setBrush(brush);
     painter.translate(moveX,moveY);
-    painter.rotate(180);  //坐标屏幕翻转
+    painter.rotate(-90);  //坐标屏幕翻转
     _drawAxis(&painter);
     _drawLayer(&painter, layer, scale);
 

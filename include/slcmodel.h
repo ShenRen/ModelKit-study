@@ -20,6 +20,8 @@ public:
     void merge(const SLCModel &other);
     bool readFile (const QString &filename);
     void skin_core_infill(int interval_num,float space,float shrinkDistance,float angle_start,float angle_delta,qreal LaserPower=-1.0,qreal ScanSpeed=-1.0);   //测试用函数
+    void line_infill(qint8 ContourCount, qreal ContourWidth,float space,float shrinkDistance,float angle_start,float angle_delta,qreal LaserPower=-1.0,qreal ScanSpeed=-1.0);   //测试用函数
+
 
 private:
     QList<qreal> layerHeights;

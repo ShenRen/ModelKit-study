@@ -222,7 +222,7 @@ void Layer::infill(const Layer::InfillSpecification &spec)
                 inputValue.push_back(temOutline);
             }
         }
-        xd::notInfillLine(inputValue,
+        xd::InfillLineSLA(inputValue,
                           outputValue,
                           outputContour,
                           spec.lineWidth + spec.interval,
@@ -240,7 +240,7 @@ void Layer::infill(const Layer::InfillSpecification &spec)
             {
                 temPolygon.push_back(Point(outputContour[i][j].x, outputContour[i][j].y, zValue));
             }
-            temPolygon.setType(Polygon::PolygonType::Contour);
+            temPolygon.setType(Polygon::PolygonType::Infill);   //这里绝对不能设置为轮廓！！
             infilled.push_back(temPolygon);
         }
         for (uint i = 0; i != outputValue.size(); ++i)
@@ -276,6 +276,8 @@ void Layer::unfill()
         if (polygon.type () == Polygon::PolygonType::Infill)
         {
             removeAt (i);
+            //这里为什么不加上i--;
+            i--;
         }
     }
 }

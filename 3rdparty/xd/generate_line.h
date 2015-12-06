@@ -98,7 +98,7 @@ namespace xd
 
     void InfillOffset(outlines theOutline,outlines & theResult,float width);  //进行偏置填充的函数。
 
-    void InfillOffsetIn(ClipperLib::Paths theOutline,outlines & theResult,float width);  //进行偏置填充的函数，输入就是放大后的数据
+    void InfillOffsetIn(ClipperLib::Paths theOutline,outlines & theResult,float width);  //进行偏置填充的函数，输入就是放大后的数据,内部自动缩小，使得输出为正常数据
 
     void PickUpLayer(std::vector<xd::outlines> theOutline,std::vector<int> & theResult);    //挑选出突变截面的函数，实现方案一
 

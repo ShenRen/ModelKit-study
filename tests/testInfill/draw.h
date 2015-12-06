@@ -21,8 +21,6 @@ public:
     void setLayer(const XJRP::Layer & L);
 public slots:
 
-    void setPen(const QPen &pen);
-    void setBrush(const QBrush &brush);
     void centering();
 
 protected:

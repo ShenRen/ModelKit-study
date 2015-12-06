@@ -27,6 +27,7 @@ private slots:
     void saveTrigger();
     void clearTrigger();
     void infillTrigger();
+    void infillPatternChanged(int N);
 private:
     XJRP::SLCModel *model;
 
@@ -34,25 +35,24 @@ private:
 
     QLabel *LayerNumLabel;
     QSpinBox *LayerNum;
-
+    //for skin_core
     QLabel *interval_numLabel;
     QLineEdit *interval_numEdit;
-
     QLabel *spaceLabel;
     QLineEdit *spaceEdit;
-
+    //common
+    QLabel *contourNumLabel;
+    QLineEdit *contourNumEdit;
+    QLabel *contourSpaceLabel;
+    QLineEdit *contourSpaceEdit;
     QLabel *shrinkDistanceLabel;
     QLineEdit *shrinkDistanceEdit;
-
     QLabel *angle_startLabel;
     QLineEdit *angle_startEdit;
-
     QLabel *angle_deltaLabel;
     QLineEdit *angle_deltaEdit;
-
     QLabel *LaserPowerLabel;
     QLineEdit *LaserPowerEdit;
-
     QLabel *ScanSpeedLabel;
     QLineEdit *ScanSpeedEdit;
 
@@ -61,6 +61,9 @@ private:
     QPushButton *clear;
     QPushButton *infill;
     QPushButton *centering;
+
+    QLabel *infillPatternLabel;
+    QComboBox *infillPatternComboBox;
 };
 //! [0]
 

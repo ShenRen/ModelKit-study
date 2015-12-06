@@ -14,30 +14,41 @@ Window::Window()
     LayerNum->setSpecialValueText(tr("0 (No Model)"));
     connect(LayerNum, SIGNAL(valueChanged(int)),
             this, SLOT(LayerChanged()));
-    LayerNumLabel = new QLabel(tr("Layer &Number:"));
+    LayerNumLabel = new QLabel(tr("Layer Number:"));
     LayerNumLabel->setBuddy(LayerNum);
+    //用来设置填充模式的combobox
+    infillPatternLabel = new QLabel(tr("Infill Pattern:"));
+    infillPatternComboBox = new QComboBox;
+    infillPatternComboBox->addItem(tr("line"));
+    infillPatternComboBox->addItem(tr("skin_core"));
+    connect(infillPatternComboBox,SIGNAL(currentIndexChanged(int)),
+            this,SLOT(infillPatternChanged(int)));
     //用来设置参数的LineEdit
     interval_numEdit = new QLineEdit(tr("2"));
-    interval_numLabel = new QLabel(tr("Interval &Number:"));
+    interval_numLabel = new QLabel(tr("Interval Number:"));
     interval_numLabel->setBuddy(interval_numEdit);
     spaceEdit = new QLineEdit(tr("0.1"));
     spaceLabel = new QLabel(tr("Space:"));
     spaceLabel->setBuddy(spaceEdit);
     shrinkDistanceEdit = new QLineEdit(tr("0.1"));
-    shrinkDistanceLabel = new QLabel(tr("Shrink &Distance:"));
+    shrinkDistanceLabel = new QLabel(tr("Shrink Distance:"));
     shrinkDistanceLabel->setBuddy(shrinkDistanceEdit);
     angle_startEdit = new QLineEdit(tr("0"));
-    angle_startLabel = new QLabel(tr("Angle &Start:"));
+    angle_startLabel = new QLabel(tr("Angle Start:"));
     angle_startLabel->setBuddy(angle_startEdit);
     angle_deltaEdit = new QLineEdit(tr("90"));
-    angle_deltaLabel = new QLabel(tr("angle &Delta:"));
+    angle_deltaLabel = new QLabel(tr("angle Delta:"));
     angle_deltaLabel->setBuddy(angle_deltaEdit);
     LaserPowerEdit = new QLineEdit(tr("4000"));
-    LaserPowerLabel = new QLabel(tr("Laser &Power:"));
+    LaserPowerLabel = new QLabel(tr("Laser Power:"));
     LaserPowerLabel->setBuddy(LaserPowerEdit);
     ScanSpeedEdit = new QLineEdit(tr("4000"));
-    ScanSpeedLabel = new QLabel(tr("Scan &Speed:"));
+    ScanSpeedLabel = new QLabel(tr("Scan Speed:"));
     ScanSpeedLabel->setBuddy(ScanSpeedEdit);
+    contourNumLabel = new QLabel(tr("Contour Number:"));
+    contourNumEdit = new QLineEdit(tr("1"));
+    contourSpaceLabel = new QLabel("Contour Space");
+    contourSpaceEdit = new QLineEdit(tr("0.1"));
     //按钮
     open = new QPushButton(tr("&open"));
     save = new QPushButton(tr("&save"));
@@ -56,36 +67,44 @@ Window::Window()
             drawArea,SLOT(centering()));
     //布局
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->setColumnStretch(0, 1);
-    mainLayout->setColumnStretch(3, 1);
-    mainLayout->addWidget(drawArea, 0, 0, 1, 14);
+    mainLayout->addWidget(drawArea, 0, 0, 1, 16);
     mainLayout->addWidget(open,2, 0);
     mainLayout->addWidget(clear,2,1);
     mainLayout->addWidget(LayerNumLabel, 2, 2);
     mainLayout->addWidget(LayerNum, 2, 3);
-    mainLayout->addWidget(infill, 2, 4);
-    mainLayout->addWidget(save, 2, 5);
-    mainLayout->addWidget(centering,2,6);
+    mainLayout->addWidget(centering,2,4);
+    mainLayout->addWidget(infillPatternLabel,2,5);
+    mainLayout->addWidget(infillPatternComboBox,2,6);
+    mainLayout->addWidget(infill, 2, 7);
+    mainLayout->addWidget(save, 2, 8);
+    //第3行
+    mainLayout->addWidget(contourNumLabel,3,0);
+    mainLayout->addWidget(contourNumEdit,3,1);
+    mainLayout->addWidget(contourSpaceLabel,3,2);
+    mainLayout->addWidget(contourSpaceEdit,3,3);
+    mainLayout->addWidget(spaceLabel,3,4);
+    mainLayout->addWidget(spaceEdit,3,5);
+    mainLayout->addWidget(shrinkDistanceLabel,3,6);
+    mainLayout->addWidget(shrinkDistanceEdit,3,7);
+    mainLayout->addWidget(angle_startLabel,3,8);
+    mainLayout->addWidget(angle_startEdit,3,9);
+    mainLayout->addWidget(angle_deltaLabel,3,10);
+    mainLayout->addWidget(angle_deltaEdit,3,11);
+    mainLayout->addWidget(LaserPowerLabel,3,12);
+    mainLayout->addWidget(LaserPowerEdit,3,13);
+    mainLayout->addWidget(ScanSpeedLabel,3,14);
+    mainLayout->addWidget(ScanSpeedEdit,3,15);
+    //试试放在第三行！
     mainLayout->addWidget(interval_numLabel,3,0);
     mainLayout->addWidget(interval_numEdit,3,1);
-    mainLayout->addWidget(spaceLabel,3,2);
-    mainLayout->addWidget(spaceEdit,3,3);
-    mainLayout->addWidget(shrinkDistanceLabel,3,4);
-    mainLayout->addWidget(shrinkDistanceEdit,3,5);
-    mainLayout->addWidget(angle_startLabel,3,6);
-    mainLayout->addWidget(angle_startEdit,3,7);
-    mainLayout->addWidget(angle_deltaLabel,3,8);
-    mainLayout->addWidget(angle_deltaEdit,3,9);
-    mainLayout->addWidget(LaserPowerLabel,3,10);
-    mainLayout->addWidget(LaserPowerEdit,3,11);
-    mainLayout->addWidget(ScanSpeedLabel,3,12);
-    mainLayout->addWidget(ScanSpeedEdit,3,13);
     setLayout(mainLayout);
     //LayerChanged();
     setWindowTitle(tr("SLC Read And Infill"));
     infill->hide();
     save->hide();
     centering->hide();
+    interval_numEdit->hide();
+    interval_numLabel->hide();
 }
 
 void Window::LayerChanged()
@@ -109,6 +128,7 @@ void Window::openTrigger()
     drawArea->setModel(*(this->model));
     LayerNum->setRange(1,this->model->size());
     LayerNum->setSpecialValueText(tr("1 (Layer Number)"));
+    drawArea->setLayer(model->layerAtIndex(LayerNum->value()-1));
     infill->show();
     centering->show();
 }
@@ -135,6 +155,10 @@ void Window::clearTrigger()
 }
 void Window::infillTrigger()
 {
+      for(int i=0;i!=this->model->count() ;++i)
+       {
+           this->model->operator [](i).unfill();
+       }
 //    for(int i=0 ; i < this->model->size();++i)
 //    {
 //        for(int j=0; j < this->model->operator[](i).size();++j)
@@ -146,12 +170,54 @@ void Window::infillTrigger()
 //            }
 //        }
 //    }
-    this->model->skin_core_infill(interval_numEdit->text().toInt(),
+    switch (infillPatternComboBox->currentIndex()) {
+    case 1:
+         this->model->skin_core_infill(interval_numEdit->text().toInt(),
                                   spaceEdit->text().toFloat(),
                                   shrinkDistanceEdit->text().toFloat(),
                                   angle_startEdit->text().toFloat(),
                                   angle_deltaEdit->text().toFloat(),
                                   LaserPowerEdit->text().toDouble(),
                                   ScanSpeedEdit->text().toDouble());
+        break;
+     case 0:
+        this->model->line_infill(contourNumEdit->text().toInt(),
+                                  contourSpaceEdit->text().toFloat(),
+                                  spaceEdit->text().toFloat(),
+                                  shrinkDistanceEdit->text().toFloat(),
+                                  angle_startEdit->text().toFloat(),
+                                  angle_deltaEdit->text().toFloat(),
+                                  LaserPowerEdit->text().toDouble(),
+                                  ScanSpeedEdit->text().toDouble());
+        break;
+    default:
+        break;
+    }
+    drawArea->setLayer(model->layerAtIndex(LayerNum->value()-1));
     save->show();
+}
+
+void Window::infillPatternChanged(int N)
+{
+    switch (N)
+    {
+        case 0:
+            interval_numEdit->hide();
+            interval_numLabel->hide();
+            contourNumEdit->show();
+            contourNumLabel->show();
+            contourSpaceEdit->show();
+            contourSpaceLabel->show();
+            break;
+        case 1:
+            interval_numEdit->show();
+            interval_numLabel->show();
+            contourNumEdit->hide();
+            contourNumLabel->hide();
+            contourSpaceEdit->hide();
+            contourSpaceLabel->hide();
+            break;
+        default:
+            break;
+    }
 }

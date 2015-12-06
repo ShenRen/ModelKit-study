@@ -185,7 +185,7 @@ void DealOneLayer(std::vector<xdpoint> & l)
 	float cross = std::abs(((nextP->y - benshen->y)*(nextnP->x - nextP->x) - (nextnP->y - nextP->y)*(nextP->x - benshen->x))); //向量叉乘的绝对值
 	while (l.size()>3)
 	{
-		if (cross / (d1*d2)<sin(1.0 / 180 * pi))   //相差1度就去除，记得用1.0
+        if (cross / (d1*d2)<sin(3.0 / 180 * pi))   //相差1度就去除，记得用1.0
 		{
 			l.erase(nextP);
 			nextP = benshen + 1;
@@ -1091,6 +1091,22 @@ void InfillLineSLA(outlines TheOutline, outlines & TheResult, float width, float
             std::list<float> minY;
             std::vector<std::pair<float,float>> maxPoint;
             std::vector<std::pair<float,float>> minPoint;
+            //注意，这里加了一个东西！！2015_12_6 22:28  气死啦，果然自己编的算法总是有问题！
+            float temMax=TheOutline[0][0].y;
+            float temMin=TheOutline[0][0].y;
+            for (int i=0;i!=TheOutline.size();i++)
+            {
+                for (int j=0;j!=TheOutline[i].size();j++)
+                {
+                    if(temMax<TheOutline[i][j].y)
+                        temMax=TheOutline[i][j].y;
+                    if(temMin>TheOutline[i][j].y)
+                        temMin=TheOutline[i][j].y;
+                }
+            }
+            maxY.push_back(temMax);
+            minY.push_back(temMin);
+
             for (int i=0;i!=TheOutline.size();i++)
             {
                 for (int j=1;j!=TheOutline[i].size();j++)
@@ -1274,22 +1290,22 @@ void InfillLineSLA(outlines TheOutline, outlines & TheResult, float width, float
                         auto Line2first=Linedate[i].second.begin();  //第二条线的第一个点。
 
                         float bijiaoY2=Linedate[i].first; //第二个条直线的Y坐标值。
-                        if (exceedExtremum(bijiaoY1,bijiaoY2,maxY,minY))
-                        {
-                            //前后两条直线如果跨越了局部极值点，也需要退出，即需要分区。
-                            break;
-                        }
-                        bijiaoY1=bijiaoY2;
-                        if(*Line2first>bijiao2)
-                        {
-                            //第二条直线的第一个点大于第一条直线的第二个点则退出，即需要分区
-                            break;
-                        }
-                        if (*(++Line2first)<bijiao1)   //注意：这里++必须在前，因为就算有括号，++在后的话也会比较完再++！！！
-                        {
-                            //第二条直线的第二个点小于第一条直线的第一个点则退出，即需要分区
-                            break;
-                        }
+//                        if (exceedExtremum(bijiaoY1,bijiaoY2,maxY,minY))
+//                        {
+//                            //前后两条直线如果跨越了局部极值点，也需要退出，即需要分区。
+//                            break;
+//                        }
+//                        bijiaoY1=bijiaoY2;
+//                        if(*Line2first>bijiao2)
+//                        {
+//                            //第二条直线的第一个点大于第一条直线的第二个点则退出，即需要分区
+//                            break;
+//                        }
+//                        if (*(++Line2first)<bijiao1)   //注意：这里++必须在前，因为就算有括号，++在后的话也会比较完再++！！！
+//                        {
+//                            //第二条直线的第二个点小于第一条直线的第一个点则退出，即需要分区
+//                            break;
+//                        }
                         auto tem2s=Linedate[i].second.begin();
                         auto tem2e=tem2s;
                         tem2e++;
@@ -1297,29 +1313,23 @@ void InfillLineSLA(outlines TheOutline, outlines & TheResult, float width, float
                             break;
                         if (j%2==0)
                         {
-                            /*auto tem2s=Linedate[i].second.begin();
-                            auto tem2e=tem2s;
-                            tem2e++;*/
                             float vectorY=Linedate[i].first-tem.back().y;
                             float vectorX=*tem2e-tem.back().x;
-                            if (abs(vectorY/sqrt(pow(vectorX,2)+pow(vectorY,2)))<sin(5.0/180*pi))   //连接线和水平线相差1度就分区，记得用1.0
-                            {
-                                break;
-                            }
+//                            if (abs(vectorY/sqrt(pow(vectorX,2)+pow(vectorY,2)))<sin(5.0/180*pi))   //连接线和水平线相差1度就分区，记得用1.0
+//                            {
+//                                break;
+//                            }
                             tem.push_back(xdpoint(*tem2e,Linedate[i].first,TheOutline[0][0].z));
                             tem.push_back(xdpoint(*tem2s,Linedate[i].first,TheOutline[0][0].z));
                         }
                         else
                         {
-                            /*auto tem2s=Linedate[i].second.begin();
-                            auto tem2e=tem2s;
-                            tem2e++;*/
                             float vectorY=Linedate[i].first-tem.back().y;
                             float vectorX=*tem2s-tem.back().x;
-                            if (abs(vectorY/sqrt(pow(vectorX,2)+pow(vectorY,2)))<sin(5.0/180*pi))   //连接线和水平线相差1度就分区，记得用1.0
-                            {
-                                break;
-                            }
+//                            if (abs(vectorY/sqrt(pow(vectorX,2)+pow(vectorY,2)))<sin(5.0/180*pi))   //连接线和水平线相差1度就分区，记得用1.0
+//                            {
+//                                break;
+//                            }
                             tem.push_back(xdpoint(*tem2s,Linedate[i].first,TheOutline[0][0].z));
                             tem.push_back(xdpoint(*tem2e,Linedate[i].first,TheOutline[0][0].z));
                         }
@@ -1620,12 +1630,12 @@ void InfillLineSLA(outlines TheOutline, outlines & TheResult, outlines & TheOutl
                     outline tem;
                     int j = 0;  //用来判断是奇数行还是偶数行的参数。
                     auto firstIn = Linedate[FirstNonZero].second.begin();
-                    float bijiao1 = *firstIn;   //第一条线的第一个点。
+                    //float bijiao1 = *firstIn;   //第一条线的第一个点。
                     tem.push_back(xdpoint(*firstIn, Linedate[FirstNonZero].first, TheOutline[0][0].z));
                     tem.push_back(xdpoint(*(++firstIn), Linedate[FirstNonZero].first, TheOutline[0][0].z));
                     int i = (FirstNonZero + 1) % Linedate.size();  //必须保证当第一个非零数据的线刚好是最后一条线时也不会加1越界！所以要模一下！
-                    float bijiao2 = *firstIn;  //第一条线的第二个点。
-                    float bijiaoY1 = Linedate[FirstNonZero].first;  //第一条线的Y坐标值。
+                    //float bijiao2 = *firstIn;  //第一条线的第二个点。
+                    //float bijiaoY1 = Linedate[FirstNonZero].first;  //第一条线的Y坐标值。
                     auto tem1s = Linedate[FirstNonZero].second.begin();
                     auto tem1e = tem1s;
                     tem1e++;
@@ -1635,63 +1645,57 @@ void InfillLineSLA(outlines TheOutline, outlines & TheResult, outlines & TheOutl
                         continue;
                     while ((!Linedate[i].second.empty()))
                     {
-                        auto Line2first = Linedate[i].second.begin();  //第二条线的第一个点。
-
-                        float bijiaoY2 = Linedate[i].first; //第二个条直线的Y坐标值。
-                        if (exceedExtremum(bijiaoY1, bijiaoY2, maxY, minY))
-                        {
-                            //前后两条直线如果跨越了局部极值点，也需要退出，即需要分区。
-                            break;
-                        }
-                        bijiaoY1 = bijiaoY2;
-                        if (*Line2first>bijiao2)
-                        {
-                            //第二条直线的第一个点大于第一条直线的第二个点则退出，即需要分区
-                            break;
-                        }
-                        if (*(++Line2first)<bijiao1)   //注意：这里++必须在前，因为就算有括号，++在后的话也会比较完再++！！！
-                        {
-                            //第二条直线的第二个点小于第一条直线的第一个点则退出，即需要分区
-                            break;
-                        }
-                        auto tem2s = Linedate[i].second.begin();
-                        auto tem2e = tem2s;
+ //                       auto Line2first = Linedate[i].second.begin();  //第二条线的第一个点。
+//
+ //                       float bijiaoY2 = Linedate[i].first; //第二个条直线的Y坐标值。
+//                        if (exceedExtremum(bijiaoY1, bijiaoY2, maxY, minY))
+//                        {
+//                            //前后两条直线如果跨越了局部极值点，也需要退出，即需要分区。
+//                            break;
+//                        }
+//                        bijiaoY1 = bijiaoY2;
+//                        if (*Line2first>bijiao2)
+//                        {
+//                            //第二条直线的第一个点大于第一条直线的第二个点则退出，即需要分区
+//                            break;
+//                        }
+//                        if (*(++Line2first)<bijiao1)   //注意：这里++必须在前，因为就算有括号，++在后的话也会比较完再++！！！
+//                        {
+//                            //第二条直线的第二个点小于第一条直线的第一个点则退出，即需要分区
+//                            break;
+//                        }
+                        auto tem2s = Linedate[i].second.begin();  //第二条线的第一个点。
+                        auto tem2e = tem2s;   //第二条线的第二个点。
                         tem2e++;
                         if (std::abs(*tem2e - *tem2s)<shrinkDistance * 2)//如果两个点的距离太近了，则不用填充了！！important！！！
                             break;
                         if (j % 2 == 0)
                         {
-                            /*auto tem2s=Linedate[i].second.begin();
-                            auto tem2e=tem2s;
-                            tem2e++;*/
-                            float vectorY = Linedate[i].first - tem.back().y;
-                            float vectorX = *tem2e - tem.back().x;
-                            if (abs(vectorY / sqrt(pow(vectorX, 2) + pow(vectorY, 2)))<sin(5.0 / 180 * pi))   //连接线和水平线相差1度就分区，记得用1.0
-                            {
-                                break;
-                            }
+                            //float vectorY = Linedate[i].first - tem.back().y;
+                            //float vectorX = *tem2e - tem.back().x;
+//                            if (abs(vectorY / sqrt(pow(vectorX, 2) + pow(vectorY, 2)))<sin(5.0 / 180 * pi))   //连接线和水平线相差1度就分区，记得用1.0
+//                            {
+//                                break;
+//                            }
                             tem.push_back(xdpoint(*tem2e, Linedate[i].first, TheOutline[0][0].z));
                             tem.push_back(xdpoint(*tem2s, Linedate[i].first, TheOutline[0][0].z));
                         }
                         else
                         {
-                            /*auto tem2s=Linedate[i].second.begin();
-                            auto tem2e=tem2s;
-                            tem2e++;*/
-                            float vectorY = Linedate[i].first - tem.back().y;
-                            float vectorX = *tem2s - tem.back().x;
-                            if (abs(vectorY / sqrt(pow(vectorX, 2) + pow(vectorY, 2)))<sin(5.0 / 180 * pi))   //连接线和水平线相差1度就分区，记得用1.0
-                            {
-                                break;
-                            }
+                           // float vectorY = Linedate[i].first - tem.back().y;
+                            //float vectorX = *tem2s - tem.back().x;
+//                            if (abs(vectorY / sqrt(pow(vectorX, 2) + pow(vectorY, 2)))<sin(5.0 / 180 * pi))   //连接线和水平线相差1度就分区，记得用1.0
+//                            {
+//                                break;
+//                            }
                             tem.push_back(xdpoint(*tem2s, Linedate[i].first, TheOutline[0][0].z));
                             tem.push_back(xdpoint(*tem2e, Linedate[i].first, TheOutline[0][0].z));
                         }
                         auto tem3s = Linedate[i].second.begin();
                         auto tem3e = tem3s;
-                        bijiao1 = *tem3e;
+                        //bijiao1 = *tem3e;
                         tem3e++;
-                        bijiao2 = *tem3e;
+                        //bijiao2 = *tem3e;
                         tem3e++;
                         Linedate[i].second.erase(tem3s, tem3e);
                         ++j;
@@ -1712,7 +1716,7 @@ void InfillLineSLA(outlines TheOutline, outlines & TheResult, outlines & TheOutl
 
                         if (j % 4 == 3 || j % 4 == 0)
                         {
-                            TheResult[i][j].x += shrinkDistance;    //此处是默认值。
+                            TheResult[i][j].x += shrinkDistance;
 
                         }
                         else
@@ -2028,8 +2032,6 @@ void notInfillLine(outlines TheOutline, outlines & TheResult, outlines & TheOutl
 		}
 	}
 }
-
-
 
 void InfillConcentric(outlines TheOutline, outlines & TheResult, outlines & TheOutlineResult, float width, int lunkuo,  float offsetWidth) //自己编写的同心填充函数
 {
@@ -2952,7 +2954,7 @@ void OutlinesClipperMethod(std::vector<xd::outlines> theOutline,std::vector<xd::
 	clipper.Execute(ClipperLib::ctDifference, offsetOutline,ClipperLib::pftEvenOdd,ClipperLib::pftEvenOdd);
 	xd::outlines offsetResult;
 	xd::InfillOffsetIn(offsetOutline,offsetResult,width);
-	xd::outputOutlines temOutputOutlines;   //存放一层的裁剪后的偏置轮廓的数据
+    xd::outputOutlines temOutputOutlines;   //存放最后一层的裁剪后的偏置轮廓的数据和交集areaA的填充数据
 	for (int j=0;j!=offsetResult.size();++j)
 	{
 		std::pair<outline,unsigned int> temPair;
@@ -2986,6 +2988,13 @@ void OutlinesClipperMethod(std::vector<xd::outlines> theOutline,std::vector<xd::
 		temPush.push_back(xd::xdpoint(areaA[i][0].X/1000000.0,areaA[i][0].Y/1000000.0));  //加上最后一个点，保证封闭
 		outlinesIn.push_back(temPush);
 	}
+    //使用直线算法前要保证一条线上没有多余点！
+    for(int i=0;i!=outlinesIn.size();++i)
+    {
+        DealOneLayer(outlinesIn[i]);
+        if(outlinesIn[i].front()!=outlinesIn[i].back())
+            outlinesIn[i].push_back(outlinesIn[i].front());
+    }
     xd::InfillLineSLA(outlinesIn,outlinesO,width,degree,0,shrinkDistance,width);
 	for (int i=0;i!=outlinesO.size();++i)
 	{
