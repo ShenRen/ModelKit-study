@@ -39,7 +39,7 @@ Window::Window()
     angle_deltaEdit = new QLineEdit(tr("90"));
     angle_deltaLabel = new QLabel(tr("angle Delta:"));
     angle_deltaLabel->setBuddy(angle_deltaEdit);
-    LaserPowerEdit = new QLineEdit(tr("4000"));
+    LaserPowerEdit = new QLineEdit(tr("143"));
     LaserPowerLabel = new QLabel(tr("Laser Power:"));
     LaserPowerLabel->setBuddy(LaserPowerEdit);
     ScanSpeedEdit = new QLineEdit(tr("4000"));

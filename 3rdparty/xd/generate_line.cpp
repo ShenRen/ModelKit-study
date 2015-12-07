@@ -2964,19 +2964,19 @@ void OutlinesClipperMethod(std::vector<xd::outlines> theOutline,std::vector<xd::
 	}
 	//result.push_back(temOutputOutlines);
 	clipper.Clear();
-	for (int i=0;i!=areaA.size();++i) //需要使用多层填充加入区域A的轮廓路径
-	{
-		std::pair<outline,unsigned int> temPair;
-		xd::outline temOutline;
-		for(int j=0;j!=areaA[i].size();++j)
-		{
-			temOutline.push_back(xd::xdpoint(areaA[i][j].X/1000000.0,areaA[i][j].Y/1000000.0));
-		}
-		temOutline.push_back(xd::xdpoint(areaA[i][0].X/1000000.0,areaA[i][0].Y/1000000.0));   //加上最后一个点，保证封闭
-		temPair.first=temOutline;
-		temPair.second=N;
-		temOutputOutlines.push_back(temPair);
-	}
+//	for (int i=0;i!=areaA.size();++i) //需要使用多层填充加入区域A的轮廓路径
+//	{
+//		std::pair<outline,unsigned int> temPair;
+//		xd::outline temOutline;
+//		for(int j=0;j!=areaA[i].size();++j)
+//		{
+//			temOutline.push_back(xd::xdpoint(areaA[i][j].X/1000000.0,areaA[i][j].Y/1000000.0));
+//		}
+//		temOutline.push_back(xd::xdpoint(areaA[i][0].X/1000000.0,areaA[i][0].Y/1000000.0));   //加上最后一个点，保证封闭
+//		temPair.first=temOutline;
+//		temPair.second=N;
+//		temOutputOutlines.push_back(temPair);
+//	}
 	xd::outlines outlinesIn,outlinesO;
 	for (int i=0;i!=areaA.size();++i)  //需要使用多层填充加入区域A的填充路径  需要先分开，再填充！
 	{

@@ -17,9 +17,8 @@ void _drawArrow(QPainter *p, const QPointF & A, const QPointF & B)
     p->translate(A);
     p->rotate(qRadiansToDegrees(std::atan2(B.y()-A.y(),B.x()-A.x())));
 
-    p->drawLine(temB.x(),temB.y(),temB.x()-5,temB.y()+5);
-    p->drawLine(temB.x(),temB.y(),temB.x()-5,temB.y()-5);
-
+    p->drawLine(temB.x(),temB.y(),temB.x()-5,temB.y()+4);
+    p->drawLine(temB.x(),temB.y(),temB.x()-5,temB.y()-4);
     p->restore();
 }
 
