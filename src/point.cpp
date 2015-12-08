@@ -48,6 +48,17 @@ void Point::setZ (qreal z)
     m_z = z;
 }
 
+#ifdef use_color
+void Point::setColor(int r,int g,int b,int a)
+{
+    this->m_color=QColor(r,g,b,a);
+}
+QColor Point::color() const
+{
+    return m_color;
+}
+#endif
+
 qreal Point::length () const
 {
     return sqrt(m_x * m_x + m_y * m_y + m_z * m_z);

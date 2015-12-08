@@ -7,9 +7,10 @@
 TEMPLATE = lib
 CONFIG += static
 TARGET = ModelKit
-QT     -= gui
+QT       += core gui
+QT += widgets
 CONFIG += c++11
-LIBS   -= -lQtGui -lGL
+#LIBS   += -lQt5Gui.a -LD:/Qt/Qt5.5.1/5.5/mingw492_32/lib
 
 DESTDIR = $$OUT_PWD/../bin
 

@@ -2,7 +2,7 @@ TEMPLATE = app
 CONFIG -= app_bundle
 CONFIG += console
 QT     += core
-QT     -= gui
+QT     += gui
 CONFIG += c++11
 
 DESTDIR = $$OUT_PWD/../../bin

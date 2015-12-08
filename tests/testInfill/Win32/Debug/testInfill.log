@@ -1,14 +1,19 @@
-﻿生成启动时间为 2015/12/5 10:04:48。
+﻿生成启动时间为 2015/12/8 11:54:05。
      1>项目“F:\qt\ModelKit-study\tests\testInfill\testInfill.vcxproj”在节点 2 上(Build 个目标)。
      1>CustomBuild:
          Moc'ing draw.h...
          Moc'ing infillplotwidget.h...
          Moc'ing window.h...
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I. /I..\..\include /ID:\qt\qt5.5.0\5.5\msvc2013\include /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtWidgets /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtGui /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtANGLE /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtCore /Idebug /I"D:\qt\qt5.5.0\5.5\msvc2013\mkspecs\win32-msvc2013" /Zi /nologo /W3 /WX- /Od /Oy- /D _CONSOLE /D UNICODE /D WIN32 /D QT_WIDGETS_LIB /D QT_GUI_LIB /D QT_CORE_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt -w34100 -w34189 -w44996 Debug\moc_draw.cpp Debug\moc_infillplotwidget.cpp Debug\moc_window.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I. /I..\..\include /ID:\qt\qt5.5.0\5.5\msvc2013\include /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtWidgets /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtGui /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtANGLE /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtCore /Idebug /I"D:\qt\qt5.5.0\5.5\msvc2013\mkspecs\win32-msvc2013" /Zi /nologo /W3 /WX- /Od /Oy- /D _CONSOLE /D UNICODE /D WIN32 /D QT_WIDGETS_LIB /D QT_GUI_LIB /D QT_CORE_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt -w34100 -w34189 -w44996 Debug\moc_draw.cpp Debug\moc_infillplotwidget.cpp Debug\moc_window.cpp draw.cpp infillplotwidget.cpp testinfill.cpp window.cpp
          moc_draw.cpp
          moc_infillplotwidget.cpp
          moc_window.cpp
+         draw.cpp
+     1>draw.cpp(42): warning C4100: “scale”: 未引用的形参
+         infillplotwidget.cpp
+         testinfill.cpp
+         window.cpp
          正在生成代码...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"..\..\bin\\testInfill.exe" /NOLOGO /LIBPATH:D:\Qt\Qt5.5.0\5.5\msvc2013\lib /LIBPATH:"F:\qt\ModelKit-study\tests\testInfill\..\..\bin" /LIBPATH:D:\qt\qt5.5.0\5.5\msvc2013\lib "F:\qt\ModelKit-study\tests\testInfill\..\..\bin\ModelKit.lib" D:\Qt\Qt5.5.0\5.5\msvc2013\lib\Qt5Widgetsd.lib D:\Qt\Qt5.5.0\5.5\msvc2013\lib\Qt5Guid.lib D:\Qt\Qt5.5.0\5.5\msvc2013\lib\Qt5Cored.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"..\..\bin\testInfill.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /SAFESEH "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" Win32\Debug\moc_draw.obj
@@ -23,4 +28,4 @@
 
 生成成功。
 
-已用时间 00:00:15.21
+已用时间 00:00:31.94

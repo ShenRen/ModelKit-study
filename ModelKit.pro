@@ -4,3 +4,5 @@ CONFIG += ordered
 
 SUBDIRS += src \
            tests
+
+QT +=gui widgets

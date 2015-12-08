@@ -1,10 +1,14 @@
 ﻿#ifndef POINT_H
 #define POINT_H
 
+#define use_color
+
 #include "math.hpp"
 #include <QDebug>
 #include <QDataStream>
-
+#ifdef use_color
+#include <QColor>
+#endif
 namespace XJRP
 {
 
@@ -21,7 +25,10 @@ public:
     void setX (qreal x);
     void setY (qreal y);
     void setZ (qreal z);
-
+#ifdef use_color
+    void setColor(int r,int g,int b,int a=255);
+    QColor color() const;
+#endif
     qreal length () const;
     qreal x() const;
     qreal y() const;
@@ -44,6 +51,9 @@ public:
 
 private:
     qreal m_x, m_y, m_z;
+#ifdef use_color
+    QColor m_color;
+#endif
 };
 
 }

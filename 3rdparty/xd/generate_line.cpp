@@ -388,6 +388,22 @@ void InfillLine(outlines TheOutline, outlines & TheResult, float width, float de
 			//第一步，轮廓点的局部极大极小值点，放在一个双向链表中。注意：选择双向链表的原因是其任意位置删除和添加元素非常快捷，降低时间复杂度。
 			std::list<float> maxY;
 			std::list<float> minY;
+             //注意，这里加了一个东西！！2015_12_6 22:28  气死啦，果然自己编的算法总是有问题！
+            float temMax=TheOutline[0][0].y;
+            float temMin=TheOutline[0][0].y;
+            for (int i=0;i!=TheOutline.size();i++)
+            {
+                for (int j=0;j!=TheOutline[i].size();j++)
+                {
+                    if(temMax<TheOutline[i][j].y)
+                        temMax=TheOutline[i][j].y;
+                    if(temMin>TheOutline[i][j].y)
+                        temMin=TheOutline[i][j].y;
+                }
+            }
+            maxY.push_back(temMax);
+            minY.push_back(temMin);
+
 			std::vector<std::pair<float,float>> maxPoint;
 			std::vector<std::pair<float,float>> minPoint;
 			for (int i=0;i!=TheOutline.size();i++)
@@ -1463,6 +1479,22 @@ void InfillLineSLA(outlines TheOutline, outlines & TheResult, outlines & TheOutl
             //第一步，轮廓点的局部极大极小值点，放在一个双向链表中。注意：选择双向链表的原因是其任意位置删除和添加元素非常快捷，降低时间复杂度。
             std::list<float> maxY;
             std::list<float> minY;
+             //注意，这里加了一个东西！！2015_12_6 22:28  气死啦，果然自己编的算法总是有问题！
+            float temMax=TheOutline[0][0].y;
+            float temMin=TheOutline[0][0].y;
+            for (int i=0;i!=TheOutline.size();i++)
+            {
+                for (int j=0;j!=TheOutline[i].size();j++)
+                {
+                    if(temMax<TheOutline[i][j].y)
+                        temMax=TheOutline[i][j].y;
+                    if(temMin>TheOutline[i][j].y)
+                        temMin=TheOutline[i][j].y;
+                }
+            }
+            maxY.push_back(temMax);
+            minY.push_back(temMin);
+
             std::vector<std::pair<float, float>> maxPoint;
             std::vector<std::pair<float, float>> minPoint;
             for (int i = 0; i != TheOutline.size(); i++)
