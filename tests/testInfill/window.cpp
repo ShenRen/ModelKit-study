@@ -134,7 +134,7 @@ void Window::openTrigger()
 }
 void Window::saveTrigger()
 {
-    QString fileName = QFileDialog::getSaveFileName(this,tr("Save a XJ file"),"/home/jana/untitled.XJ",tr("slicing file(*.XJ)"));
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Save a xlc file"),"/home/jana/untitled.xlc",tr("slicing file(*.xlc)"));
     if(fileName.length()==0)
         return;
     QFile file(fileName);

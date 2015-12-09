@@ -39,7 +39,7 @@ void _drawAxis(QPainter *p)
     p->drawPoint(QPointF(0,0));
 }
 
-void _drawPolygon(QPainter *p, const QPolygonF &polygon, qreal scale)  //»­QPolygonF
+void _drawPolygon(QPainter *p, const QPolygonF &polygon)  //»­QPolygonF
 {
     //temp
     p->drawPolygon(polygon);
@@ -55,11 +55,10 @@ void _drawPolygon(QPainter *p, const QPolygonF &polygon, qreal scale)  //»­QPoly
 
 void _drawLayer(QPainter *p, const Layer & L,qreal scale)   //»­Layer
 {
-
-     for(const Polygon & po : L)
-     {
-        QPolygonF qp;
-        switch (po.type ())
+    for(int i=0;i!=L.size();++i)
+    {
+         QPolygonF qp;
+        switch (L.operator [](i).type ())
         {
             case Polygon::Infill :
                 p->setPen (QPen (Qt::blue));
@@ -71,12 +70,20 @@ void _drawLayer(QPainter *p, const Layer & L,qreal scale)   //»­Layer
                 p->setPen (QPen (Qt::darkGreen));
                 break;
         }
-        for (const Point &point : po)
+        for (const Point &point : L.operator [](i))
         {
             qp.append (QPointF (point.x () * scale, point.y () * scale));
         }
-        _drawPolygon(p,qp,scale);
-     }
+        _drawPolygon(p,qp);
+        if(i<L.size()-1)
+        {
+            QPen temPen(Qt::black);
+            temPen.setStyle(Qt::DashLine);
+            p->setPen(temPen);
+            p->drawLine(QPointF(L.operator [](i).back().x()* scale,L.operator [](i).back().y()* scale),
+                        QPointF(L.operator [](i+1).front().x()* scale,L.operator [](i+1).front().y()* scale));
+        }
+    }
 }
 
 draw::draw(QWidget *parent)
