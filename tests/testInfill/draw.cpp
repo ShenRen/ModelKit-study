@@ -158,11 +158,11 @@ void draw::mousePressEvent(QMouseEvent *e)
 
 void draw::mouseMoveEvent(QMouseEvent *e)
 {
-    qreal dx = qreal(e->x() - lastPos.x()) / scale;
-    qreal dy = qreal(e->y() - lastPos.y()) / scale;
+    qreal dx = qreal(e->x() - lastPos.x())/devicePixelRatio() ;
+    qreal dy = qreal(e->y() - lastPos.y())/devicePixelRatio() ;
     if (e->buttons() & Qt::LeftButton) {
-        moveX+=dx*15;
-        moveY+=dy*15;
+        moveX+=dx;
+        moveY+=dy;
         update();
     } else if (e->buttons() & Qt::RightButton) {
 
