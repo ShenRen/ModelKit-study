@@ -17,6 +17,8 @@ public:
         {
             Unidirectional,
             Orthogonal,
+            Concentric,
+            SelfRecognition
         };
 
         InfillType type;
@@ -33,6 +35,9 @@ public:
 
     void setHeight (const qreal height);
     qreal height () const;
+
+    void setCoatingParameter (const QVariant& para);
+    QVariant coatingParameter () const;
 
     const Layer offsetted (const qreal delta) const;
     void offset (const qreal delta);
@@ -53,6 +58,8 @@ public:
 private:
     qreal m_thickness = 0.0;
     qreal m_height = 0.0;
+
+    QVariant m_coatingParameter;
 };
 
 }

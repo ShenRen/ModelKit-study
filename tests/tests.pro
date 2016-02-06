@@ -1,7 +1,9 @@
 TEMPLATE = subdirs
 
-SUBDIRS += testModelKit \
-           testSLC \
-           testInfill \
-           testOffset
+CONFIG += ordered
+
+SUBDIRS += testInfill
+
 QT     += core gui widgets
+
+

@@ -1,0 +1,67 @@
+[33mcommit 4fd6c5d088c37fa893ec6edf51c3b46b6a9f9bcb[m
+Author: Xiaodong_Wang <dongzhixiaodong@gmail.com>
+Date:   Thu Dec 10 17:29:53 2015 +0800
+
+    make move reasonable
+
+[33mcommit 80d9f64f09727908dff52b3d050455e0cb8a0575[m
+Author: Xiaodong_Wang <dongzhixiaodong@gmail.com>
+Date:   Wed Dec 9 16:13:51 2015 +0800
+
+    add jump line to show
+
+[33mcommit b5b9d510d2ba8ea605c23da4eb8e37aeef22fd06[m
+Author: Xiaodong_Wang <dongzhixiaodong@gmail.com>
+Date:   Tue Dec 8 13:53:22 2015 +0800
+
+    add color
+
+[33mcommit 5d24d2a80238565ffbf691cb213715548e1b66a0[m
+Author: Xiaodong_Wang <dongzhixiaodong@gmail.com>
+Date:   Mon Dec 7 22:11:07 2015 +0800
+
+    modify
+
+[33mcommit 297661091c00d64da598e7eea1d9e1f5fa57a65f[m
+Author: Xiaodong_Wang <dongzhixiaodong@gmail.com>
+Date:   Sun Dec 6 22:31:32 2015 +0800
+
+    add and modify
+    
+    solve some error in generate_line
+
+[33mcommit dde4463c7fb8f290fa223d9dc3dd855110997775[m
+Author: Xiaodong_Wang <dongzhixiaodong@gmail.com>
+Date:   Sat Dec 5 16:46:58 2015 +0800
+
+    addArrow
+
+[33mcommit ee3fcfdf501dd5773f67e81e088337b2299600af[m
+Author: Xiaodong_Wang <dongzhixiaodong@gmail.com>
+Date:   Fri Dec 4 17:30:08 2015 +0800
+
+    ShowEveryLayer
+
+[33mcommit e8feb5e10f1c87f6d7fcd7597e707c7da6113c10[m
+Author: Xiaodong_Wang <dongzhixiaodong@gmail.com>
+Date:   Thu Dec 3 21:24:53 2015 +0800
+
+    ShowLayer
+
+[33mcommit 80729bb981a2726b0ab70a335afb81a02638faa3[m
+Author: Xiaodong_Wang <dongzhixiaodong@gmail.com>
+Date:   Wed Dec 2 21:56:24 2015 +0800
+
+    a third part library
+
+[33mcommit 8f048992a4742b434620cf431d3643d75d8b3af0[m
+Author: Xiaodong_Wang <dongzhixiaodong@gmail.com>
+Date:   Wed Dec 2 21:39:37 2015 +0800
+
+    git commit
+
+[33mcommit 742dd1774ca95008077ff600044867b941676361[m
+Author: Xiaodong_Wang <dongzhixiaodong@gmail.com>
+Date:   Wed Dec 2 21:32:25 2015 +0800
+
+    :boom::camel: Added .gitattributes

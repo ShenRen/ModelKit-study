@@ -2,9 +2,11 @@
 #include "infillplotwidget.h"
 #include "slcmodel.h"
 #include <QElapsedTimer>
+#include "xd/generate_line.h"
 //#include <qstring.h>
 #include "draw.h"
 #include "window.h"
+#include<QDebug>
 
 using namespace XJRP;
 
@@ -56,7 +58,13 @@ int main(int argc, char *argv[])
     Window bb;
     bb.show();
 
-
+    //测试面积是否正确
+//    xd::outline ol1,ol2;
+//    xd::outlines ols;
+//    ol1<<xd::xdpoint(0,0)<<xd::xdpoint(3,0)<<xd::xdpoint(3,3)<<xd::xdpoint(0,3);
+//    ol2<<xd::xdpoint(1,1)<<xd::xdpoint(1,2)<<xd::xdpoint(2,2)<<xd::xdpoint(2,1);
+//    ols<<ol1<<ol2;
+//    qDebug()<<"The area is"<<ol1.getArea()<<"\t"<<ol2.getArea()<<"\t"<<ols.getArea();
 
     return a.exec ();
 }

@@ -15,7 +15,6 @@ float radians(float jiaodu) //½Ç¶È×ª»»Îª·ù¶ÈµÄº¯Êı
     return(jiaodu/180*pi);
 }
 
-
 float xdpoint::modulus() const
 {
     return std::sqrt(x*x+y*y);
@@ -40,8 +39,43 @@ xdpoint & xdpoint::argument(float new_argument)
     return *this;
 }
 
-typedef std::vector<xdpoint> outline;
-typedef std::vector<outline> outlines;
+void xdpoint::scale(float factor)
+{
+    this->x*=factor;
+    this->y*=factor;
+}
+
+void xdpoint::translate(float x,float y)
+{
+    this->x+=x;
+    this->y+=y;
+}
+
+float xdpoint::distanceTo(const xd::xdpoint &B)
+{
+    float dx = ((float)B.x - this->x);
+    float dy = ((float)B.y - this->y);
+    return std::sqrt(dx*dx + dy*dy);
+}
+
+double outline::getArea()
+{
+    m_area=0;
+    ClipperLib::Path temPath;
+    OutlineToClipperPath(*this,& temPath);
+    m_area = ClipperLib::Area(temPath)/1000000/1000000;
+    return m_area;
+}
+
+double outlines::getArea()
+{
+    m_area=0;
+    for(int i = 0 ; i!=this->size(); ++i)
+    {
+        m_area += this->operator [](i).getArea();
+    }
+    return m_area;
+}
 
 void ClipperPathToOutline(const ClipperLib::Path & input,outline * output)
 {
@@ -2664,6 +2698,7 @@ void InfillOffset(outlines theOutline,outlines & theResult,float width)  //½øĞĞÆ
 				{
 					temData.push_back(xd::xdpoint((float)solution[i][j].X/1000000.0,(float)solution[i][j].Y/1000000.0));
 				}
+
 				temData.push_back(xd::xdpoint((float)solution[i][0].X/1000000.0,(float)solution[i][0].Y/1000000.0));//¼ÓÉÏ×îºóÒ»¸öµã£¬±£Ö¤·â±Õ
 				dataOffset.push_back(temData);
 				theResult.push_back(temData);
@@ -2677,7 +2712,7 @@ void InfillOffset(outlines theOutline,outlines & theResult,float width)  //½øĞĞÆ
 }
 
 void InfillOffsetIn(ClipperLib::Paths theOutline,outlines & theResult,float width)  //½øĞĞÆ«ÖÃÌî³äµÄº¯Êı¡£  Î´ÑéÖ¤
-{
+{//Èç¹ûÆ«ÖÃ½á¹ûÊÇ3¸öµã£¬ÇÒÆäÖĞÁ½¸öµãÏàµÈ£¬Ôò²»ÓÃÕâ¸ö½á¹û
 	if (!theOutline.empty())
 	{
 		ClipperLib::ClipperOffset temO;
@@ -2699,7 +2734,16 @@ void InfillOffsetIn(ClipperLib::Paths theOutline,outlines & theResult,float widt
 				{
 					temData.push_back(xd::xdpoint((float)solution[i][j].X/1000000.0,(float)solution[i][j].Y/1000000.0));
 				}
-				temData.push_back(xd::xdpoint((float)solution[i][0].X/1000000.0,(float)solution[i][0].Y/1000000.0));//¼ÓÉÏ×îºóÒ»¸öµã£¬±£Ö¤·â±Õ
+                if(temData.size()<=2)
+                    continue;
+                if(temData.size()==3)
+                {
+                    if(temData[0]==temData[1]||temData[1]==temData[2]||temData[2]==temData[0])
+                        continue;
+//                    if(temData[0].isDifference(temData[1])||temData[1].isDifference(temData[2])||temData[2].isDifference(temData[0])) //Õâ¸öÒÔºó¿Ï¶¨Òª¸Ä£¡
+//                        continue;
+                }
+                temData.push_back(xd::xdpoint((float)solution[i][0].X/1000000.0,(float)solution[i][0].Y/1000000.0));//¼ÓÉÏ×îºóÒ»¸öµã£¬±£Ö¤·â±Õ
 				dataOffset.push_back(temData);
 				theResult.push_back(temData);
 			}			
@@ -2994,21 +3038,22 @@ void OutlinesClipperMethod(std::vector<xd::outlines> theOutline,std::vector<xd::
 		temPair.second=1;
 		temOutputOutlines.push_back(temPair);
 	}
-	//result.push_back(temOutputOutlines);
 	clipper.Clear();
-//	for (int i=0;i!=areaA.size();++i) //ĞèÒªÊ¹ÓÃ¶à²ãÌî³ä¼ÓÈëÇøÓòAµÄÂÖÀªÂ·¾¶
-//	{
-//		std::pair<outline,unsigned int> temPair;
-//		xd::outline temOutline;
-//		for(int j=0;j!=areaA[i].size();++j)
-//		{
-//			temOutline.push_back(xd::xdpoint(areaA[i][j].X/1000000.0,areaA[i][j].Y/1000000.0));
-//		}
-//		temOutline.push_back(xd::xdpoint(areaA[i][0].X/1000000.0,areaA[i][0].Y/1000000.0));   //¼ÓÉÏ×îºóÒ»¸öµã£¬±£Ö¤·â±Õ
-//		temPair.first=temOutline;
-//		temPair.second=N;
-//		temOutputOutlines.push_back(temPair);
-//	}
+
+    for (int i=0;i!=areaA.size();++i) //ĞèÒªÊ¹ÓÃ¶à²ãÌî³ä¼ÓÈëÇøÓòAµÄÂÖÀªÂ·¾¶
+    {
+        std::pair<outline,unsigned int> temPair;
+        xd::outline temOutline;
+        for(int j=0;j!=areaA[i].size();++j)
+        {
+            temOutline.push_back(xd::xdpoint(areaA[i][j].X/1000000.0,areaA[i][j].Y/1000000.0));
+        }
+        temOutline.push_back(xd::xdpoint(areaA[i][0].X/1000000.0,areaA[i][0].Y/1000000.0));   //¼ÓÉÏ×îºóÒ»¸öµã£¬±£Ö¤·â±Õ
+        temPair.first=temOutline;
+        temPair.second=N;
+        temOutputOutlines.push_back(temPair);
+    }
+
 	xd::outlines outlinesIn,outlinesO;
 	for (int i=0;i!=areaA.size();++i)  //ĞèÒªÊ¹ÓÃ¶à²ãÌî³ä¼ÓÈëÇøÓòAµÄÌî³äÂ·¾¶  ĞèÒªÏÈ·Ö¿ª£¬ÔÙÌî³ä£¡
 	{

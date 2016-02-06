@@ -1,9 +1,12 @@
 ﻿#include "layer.h"
 #include "../3rdparty/clipper/clipper.hpp"
 #include "../3rdparty/xd/generate_line.h"
-#include "../3rdparty/cura/infill.h"
+#include "../3rdparty/xd/self_recognition.h"
+#include <iostream>
 
-// #define USE_CURA
+#ifdef USE_CURA
+#include "../3rdparty/cura/infill.h"
+#endif
 
 using namespace XJRP;
 
@@ -25,6 +28,16 @@ void Layer::setHeight(const qreal height)
 qreal Layer::height() const
 {
     return m_height;
+}
+
+void Layer::setCoatingParameter(const QVariant &para)
+{
+    m_coatingParameter = para;
+}
+
+QVariant Layer::coatingParameter() const
+{
+    return m_coatingParameter;
 }
 
 const Layer Layer::offsetted(const qreal delta) const
@@ -222,25 +235,52 @@ void Layer::infill(const Layer::InfillSpecification &spec)
                 inputValue.push_back(temOutline);
             }
         }
-        xd::InfillLineSLA(inputValue,
-                          outputValue,
-                          outputContour,
-                          spec.lineWidth + spec.interval,
-                          0 - spec.angle,
-                          spec.extraContourCount,
-                          spec.shrinkWidth,
-                          spec.extraContourWidth);
-
+        if(InfillSpecification::InfillType::Unidirectional == spec.type)
+        {
+            xd::InfillLineSLA(inputValue,
+                              outputValue,
+                              outputContour,
+                              spec.lineWidth + spec.interval,
+                              0 - spec.angle,
+                              spec.extraContourCount,
+                              spec.shrinkWidth,
+                              spec.extraContourWidth);
+        }
+        else if(InfillSpecification::InfillType::Concentric == spec.type)
+        {
+            xd::InfillConcentric(inputValue,
+                                 outputValue,
+                                 outputContour,
+                                 spec.lineWidth + spec.interval,
+                                 spec.extraContourCount,
+                                 spec.extraContourWidth);
+        }
+        else if(InfillSpecification::InfillType::SelfRecognition == spec.type)
+        {//自识别填充要求进入的多边形都是分开后的多边形，因此需要先将输入多边形按照区域分开！
+            std::vector<xd::outlines> singleArea;
+            xd::offsetReturnSingleRegion(inputValue,singleArea);
+            std::cout<<"这一层是自识别填充，分成了"<<singleArea.size()<<"个小区域"<<"\n";
+            for(int self=0;self!=singleArea.size();++self)
+            {
+                xd::outlines singleInfill;
+                self_identifying(singleArea[self],
+                                 singleInfill,
+                                 spec.lineWidth ,
+                                 spec.interval,
+                                 0 - spec.angle);
+                outputValue.insert(outputValue.end(),singleInfill.begin(),singleInfill.end());
+            }
+        }
         qreal zValue (height ());
 
-        for (int i = 0; i != outputContour.size(); ++i)   //这里不能用spec.extraContourCount，因为可能没有偏置轮廓
+		for (int i = 0; i != outputContour.size(); ++i)   //这里不能用spec.extraContourCount，因为可能没有偏置轮廓
         {
             Polygon temPolygon;
             for (uint j = 0; j != outputContour[i].size(); ++j)
             {
                 temPolygon.push_back(Point(outputContour[i][j].x, outputContour[i][j].y, zValue));
             }
-            temPolygon.setType(Polygon::PolygonType::Infill);   //这里绝对不能设置为轮廓！！
+			temPolygon.setType(Polygon::PolygonType::Infill);   //这里绝对不能设置为轮廓！！
             infilled.push_back(temPolygon);
         }
         for (uint i = 0; i != outputValue.size(); ++i)
@@ -276,8 +316,8 @@ void Layer::unfill()
         if (polygon.type () == Polygon::PolygonType::Infill)
         {
             removeAt (i);
-            //这里为什么不加上i--;
-            i--;
+			//这里为什么不加上i--;
+			i--;
         }
     }
 }
@@ -304,17 +344,21 @@ QDataStream &operator << (QDataStream &stream, const Layer &layer)
 {
     stream << layer.height ();
     stream << layer.thickness();
-    stream << *((QList<Polygon>*)&layer);
+    stream << layer.coatingParameter();
+    stream << *((QList<XJRP::Polygon>*)&layer);
     return stream;
 }
 
 QDataStream &operator >> (QDataStream &stream, Layer &layer)
 {
     qreal height, thickness;
+    QVariant para;
     stream >> height;
     stream >> thickness;
-    stream >> *((QList<Polygon>*)&layer);
+    stream >> para;
+    stream >> *((QList<XJRP::Polygon>*)&layer);
     layer.setHeight (height);
     layer.setThickness(thickness);
+    layer.setCoatingParameter(para);
     return stream;
 }

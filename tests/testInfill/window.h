@@ -28,6 +28,7 @@ private slots:
     void clearTrigger();
     void infillTrigger();
     void infillPatternChanged(int N);
+    void setSupportPowerTrigger();
 private:
     XJRP::SLCModel *model;
 
@@ -55,12 +56,15 @@ private:
     QLineEdit *LaserPowerEdit;
     QLabel *ScanSpeedLabel;
     QLineEdit *ScanSpeedEdit;
+    QLabel *supportPowerLabel;
+    QLineEdit *supportPowerEdit;
 
     QPushButton *open;
     QPushButton *save;
     QPushButton *clear;
     QPushButton *infill;
     QPushButton *centering;
+    QPushButton *setSupportPower;
 
     QLabel *infillPatternLabel;
     QComboBox *infillPatternComboBox;

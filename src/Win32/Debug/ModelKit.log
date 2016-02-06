@@ -1,10 +1,7 @@
-﻿生成启动时间为 2015/12/8 11:53:46。
+﻿生成启动时间为 2016/1/12 20:10:27。
      1>项目“F:\qt\ModelKit-study\src\ModelKit.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I. /I..\include /I..\3rdparty /ID:\qt\qt5.5.0\5.5\msvc2013\include /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtWidgets /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtGui /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtANGLE /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtCore /Idebug /I"D:\qt\qt5.5.0\5.5\msvc2013\mkspecs\win32-msvc2013" /Zi /nologo /W3 /WX- /Od /Oy- /D _WINDOWS /D UNICODE /D WIN32 /D QT_WIDGETS_LIB /D QT_GUI_LIB /D QT_CORE_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt -w34100 -w34189 -w44996 boundary.cpp ..\3rdparty\clipper\clipper.cpp ..\3rdparty\xd\generate_line.cpp ..\3rdparty\cura\infill.cpp layer.cpp point.cpp polygon.cpp slcmodel.cpp
-         boundary.cpp
-     1>boundary.cpp(6): warning C4056: 浮点常量算术溢出
-         clipper.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I. /I..\include /I..\3rdparty /ID:\qt\qt5.5.0\5.5\msvc2013\include /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtWidgets /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtGui /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtANGLE /ID:\qt\qt5.5.0\5.5\msvc2013\include\QtCore /Idebug /I"D:\qt\qt5.5.0\5.5\msvc2013\mkspecs\win32-msvc2013" /Zi /nologo /W3 /WX- /Od /Oy- /D _WINDOWS /D UNICODE /D WIN32 /D QT_WIDGETS_LIB /D QT_GUI_LIB /D QT_CORE_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt -w34100 -w34189 -w44996 ..\3rdparty\xd\generate_line.cpp layer.cpp slcmodel.cpp
          generate_line.cpp
      1>f:\qt\modelkit-study\3rdparty\xd\generate_line.h(16): warning C4305: “初始化”: 从“double”到“const float”截断
      1>..\3rdparty\xd\generate_line.cpp(51): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
@@ -14,125 +11,86 @@
      1>..\3rdparty\xd\generate_line.cpp(360): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
      1>..\3rdparty\xd\generate_line.cpp(376): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
      1>..\3rdparty\xd\generate_line.cpp(378): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(480): warning C4189: “beforebP”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(707): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(723): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(725): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(827): warning C4189: “beforebP”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(1061): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(1077): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(1079): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(1377): warning C4018: “<”: 有符号/无符号不匹配
-     1>..\3rdparty\xd\generate_line.cpp(1197): warning C4189: “beforebP”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(1280): warning C4189: “bijiaoY1”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(1292): warning C4189: “bijiaoY2”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(1317): warning C4189: “vectorX”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(1316): warning C4189: “vectorY”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(1328): warning C4189: “vectorX”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(1327): warning C4189: “vectorY”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(1435): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(1451): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(1453): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(1735): warning C4018: “<”: 有符号/无符号不匹配
-     1>..\3rdparty\xd\generate_line.cpp(1555): warning C4189: “beforebP”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(1800): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(1816): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(1818): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(1920): warning C4189: “beforebP”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(2050): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2066): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2068): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2197): warning C4189: “beforebP”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(2485): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2584): warning C4244: “参数”: 从“float”转换到“unsigned int”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2594): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2479): warning C4189: “MinY”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(2478): warning C4189: “MaxY”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(2495): warning C4189: “beforebP”: 局部变量已初始化但不引用
-     1>..\3rdparty\xd\generate_line.cpp(2616): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2633): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2635): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(496): warning C4189: “beforebP”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(723): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(739): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(741): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(843): warning C4189: “beforebP”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(1077): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(1093): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(1095): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(1393): warning C4018: “<”: 有符号/无符号不匹配
+     1>..\3rdparty\xd\generate_line.cpp(1213): warning C4189: “beforebP”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(1296): warning C4189: “bijiaoY1”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(1308): warning C4189: “bijiaoY2”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(1333): warning C4189: “vectorX”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(1332): warning C4189: “vectorY”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(1344): warning C4189: “vectorX”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(1343): warning C4189: “vectorY”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(1451): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(1467): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(1469): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(1767): warning C4018: “<”: 有符号/无符号不匹配
+     1>..\3rdparty\xd\generate_line.cpp(1587): warning C4189: “beforebP”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(1832): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(1848): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(1850): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(1952): warning C4189: “beforebP”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(2082): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2098): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2100): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2229): warning C4189: “beforebP”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(2517): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2616): warning C4244: “参数”: 从“float”转换到“unsigned int”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2626): warning C4244: “初始化”: 从“float”转换到“int”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2511): warning C4189: “MinY”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(2510): warning C4189: “MaxY”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(2527): warning C4189: “beforebP”: 局部变量已初始化但不引用
+     1>..\3rdparty\xd\generate_line.cpp(2648): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2665): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
      1>..\3rdparty\xd\generate_line.cpp(2668): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2670): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2694): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2703): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2719): warning C4258: “i”: 忽略 For 循环中的定义；使用封闭范围中的定义
-                 ..\3rdparty\xd\generate_line.cpp(2713) : 忽略“i”的定义
-                 ..\3rdparty\xd\generate_line.cpp(2685) : 使用“i”的定义
-     1>..\3rdparty\xd\generate_line.cpp(2755): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2837): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2839): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2906): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2986): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(2988): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3023): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3039): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3041): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3058): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3082): warning C4244: “+=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3084): warning C4244: “-=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3086): warning C4244: “-=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3088): warning C4244: “+=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3101): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3103): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3132): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3148): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3150): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3167): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3181): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3182): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3205): warning C4244: “+=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3207): warning C4244: “-=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3209): warning C4244: “-=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3213): warning C4244: “+=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3228): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3230): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3260): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3276): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-     1>..\3rdparty\xd\generate_line.cpp(3278): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
-         infill.cpp
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(60): warning C4244: “参数”: 从“const double”转换到“const int32_t”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(103): warning C4244: “return”: 从“double”转换到“int32_t”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(187): warning C4244: “return”: 从“double”转换到“int64_t”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(202): warning C4244: “参数”: 从“int64_t”转换到“const int32_t”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(218): warning C4244: “return”: 从“double”转换到“int”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(230): warning C4244: “=”: 从“const ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(231): warning C4244: “=”: 从“const ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(264): warning C4244: “=”: 从“const ClipperLib::cInt”转换到“double”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(265): warning C4244: “=”: 从“const ClipperLib::cInt”转换到“double”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(275): warning C4244: “参数”: 从“const double”转换到“ClipperLib::cInt”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(280): warning C4244: “参数”: 从“const double”转换到“ClipperLib::cInt”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(286): warning C4244: “参数”: 从“const ClipperLib::cInt”转换到“const int32_t”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(289): warning C4244: “+=”: 从“const ClipperLib::cInt”转换到“int32_t”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(290): warning C4244: “+=”: 从“const ClipperLib::cInt”转换到“int32_t”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(300): warning C4244: “参数”: 从“const ClipperLib::cInt”转换到“const int32_t”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(303): warning C4244: “-=”: 从“const ClipperLib::cInt”转换到“int32_t”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\intpoint.h(304): warning C4244: “-=”: 从“const ClipperLib::cInt”转换到“int32_t”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\polygon.h(177): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“double”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\polygon.h(189): warning C4244: “参数”: 从“double”转换到“ClipperLib::cInt”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\polygon.h(631): warning C4244: “初始化”: 从“int64_t”转换到“int”，可能丢失数据
-     1>f:\qt\modelkit-study\3rdparty\cura\polygon.h(644): warning C4244: “初始化”: 从“int64_t”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(144): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(154): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(155): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(175): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(176): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(187): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(226): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(227): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(257): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(258): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(271): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(342): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(358): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(359): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(387): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(388): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
-     1>..\3rdparty\cura\infill.cpp(402): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2701): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2710): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2734): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2743): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2759): warning C4258: “i”: 忽略 For 循环中的定义；使用封闭范围中的定义
+                 ..\3rdparty\xd\generate_line.cpp(2753) : 忽略“i”的定义
+                 ..\3rdparty\xd\generate_line.cpp(2725) : 使用“i”的定义
+     1>..\3rdparty\xd\generate_line.cpp(2795): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2877): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2879): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(2946): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3014): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3016): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3028): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3030): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3065): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3081): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3083): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3100): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3124): warning C4244: “+=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3126): warning C4244: “-=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3128): warning C4244: “-=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3130): warning C4244: “+=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3143): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3145): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3174): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3190): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3192): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3209): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3223): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3224): warning C4244: “初始化”: 从“ClipperLib::cInt”转换到“int”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3247): warning C4244: “+=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3249): warning C4244: “-=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3251): warning C4244: “-=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3255): warning C4244: “+=”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3270): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3272): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3302): warning C4244: “参数”: 从“float”转换到“ClipperLib::cInt”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3318): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+     1>..\3rdparty\xd\generate_line.cpp(3320): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
          layer.cpp
      1>f:\qt\modelkit-study\src\../3rdparty/xd/generate_line.h(16): warning C4305: “初始化”: 从“double”到“const float”截断
-         point.cpp
-         polygon.cpp
          slcmodel.cpp
      1>F:\qt\ModelKit-study\3rdparty\xd/generate_line.h(16): warning C4305: “初始化”: 从“double”到“const float”截断
          正在生成代码...
@@ -150,4 +108,4 @@
 
 生成成功。
 
-已用时间 00:00:18.62
+已用时间 00:00:07.85

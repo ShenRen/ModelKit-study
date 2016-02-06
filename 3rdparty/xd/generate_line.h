@@ -30,19 +30,74 @@ namespace xd
         float argument() const;
         xdpoint & modulus(float new_modulus);
         xdpoint & argument(float new_argument);
-        friend inline bool operator== (const xdpoint& a, const xdpoint& b)
+        bool isDifference(const xdpoint & p)
         {
-            return a.x == b.x && a.y == b.y;
+            return std::abs(this->x - p.x) < 0.005 || std::abs(this->y - p.y) < 0.005;
+        }
+        friend inline bool operator== (const xdpoint& a, const xdpoint& b)
+        {//两个点相距小于0.001则认为相等
+            //return a.x == b.x && a.y == b.y;
+            return std::abs(a.x - b.x) < 0.005 && std::abs(a.y - b.y) < 0.005;
         }
         friend inline bool operator!= (const xdpoint& a, const xdpoint& b)
         {
             return a.x != b.x  || a.y != b.y;
         }
+        void scale(float factor);
+        void translate(float x,float y);
+        float distanceTo(const xdpoint &B);
     };
 
 
-    typedef std::vector<xdpoint> outline;
-    typedef std::vector<outline> outlines;
+    //typedef std::vector<xdpoint> outline;
+    class outline:public std::vector<xdpoint>
+    {
+    public:
+        double getArea();
+
+    private:
+        double m_area;
+    };
+
+    inline outline & operator <<(outline & s,const xdpoint & p)  //重载outline加入xdpoint的输入流，方便加点
+    {
+        s.push_back(p);
+        return s;
+    }
+
+//    std::ostream & operator <<(std::ostream & s, const outline & ol)  //重载std输出流，方便使用cout输出显示
+//    {
+//        if (ol.empty()) return s;
+//            outline::size_type last = ol.size() -1;
+//            for (outline::size_type i = 0; i < last; i++)
+//                s << "(" << ol[i].x << "," << ol[i].y << "), ";
+//            s << "(" << ol[last].x << "," << ol[last].y << ")\n";
+//            return s;
+//    }
+
+    //typedef std::vector<outline> outlines;
+    class outlines:public std::vector<outline>
+    {
+    public:
+        double getArea();
+
+    private:
+        double m_area;
+    };
+
+    inline outlines & operator <<(outlines & s, const outline & ol) //重载outlines加入outline的输入流，方便加outline
+    {
+        s.push_back(ol);
+        return s;
+    }
+
+//    std::ostream & operator <<(std::ostream & s, const outlines & ols)  //重载std输出流，方便使用cout输出显示
+//    {
+//        for(outlines::size_type i=0;i!=ols.size();++i)
+//                s<<ols[i];
+//            return s;
+//    }
+
     typedef std::vector<std::pair<outline,unsigned int> > outputOutlines;   //用于输出带有扫描层数的路径。
 
     void ClipperPathToOutline(const ClipperLib::Path & input,outline * output);   //没加最后一个点，注意！
@@ -90,7 +145,7 @@ namespace xd
     void InfillLineSLA(outlines TheOutline, outlines & TheResult, float width, float degree, int lunkuo, float shrinkDistance,  float offsetWidth); //自己编写的填充线生成函数。
     void InfillLineSLA(outlines TheOutline, outlines & TheResult, outlines & TheOutlineResult, float width, float degree, int lunkuo, float shrinkDistance, float offsetWidth); //自己编写的填充线生成函数可以分开轮廓填充数据。
     void notInfillLine(outlines TheOutline, outlines & TheResult, outlines & TheOutlineResult, float width, float degree, int lunkuo, float shrinkDistance, float offsetWidth);//不分区的填充算法，为了加速
-    void InfillConcentric(outlines TheOutline, outlines & TheResult, outlines & TheOutlineResult, float width, int lunkuo, float offsetWidth); //自己编写的同学填充函数
+    void InfillConcentric(outlines TheOutline, outlines & TheResult, outlines & TheOutlineResult, float width, int lunkuo, float offsetWidth); //自己编写的同心填充函数
 
     void InfillLineIn(outlines TheOutline,outlines & TheResult,float width,float degree ); //自己编写的填充线生成函数。
 

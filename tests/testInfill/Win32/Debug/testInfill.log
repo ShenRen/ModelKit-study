@@ -1,4 +1,4 @@
-﻿生成启动时间为 2015/12/8 11:54:05。
+﻿生成启动时间为 2016/1/12 20:10:35。
      1>项目“F:\qt\ModelKit-study\tests\testInfill\testInfill.vcxproj”在节点 2 上(Build 个目标)。
      1>CustomBuild:
          Moc'ing draw.h...
@@ -10,7 +10,6 @@
          moc_infillplotwidget.cpp
          moc_window.cpp
          draw.cpp
-     1>draw.cpp(42): warning C4100: “scale”: 未引用的形参
          infillplotwidget.cpp
          testinfill.cpp
          window.cpp
@@ -28,4 +27,4 @@
 
 生成成功。
 
-已用时间 00:00:31.94
+已用时间 00:00:25.75

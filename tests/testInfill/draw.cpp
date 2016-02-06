@@ -75,14 +75,14 @@ void _drawLayer(QPainter *p, const Layer & L,qreal scale)   //画Layer
             qp.append (QPointF (point.x () * scale, point.y () * scale));
         }
         _drawPolygon(p,qp);
-        if(i<L.size()-1)
-        {
-            QPen temPen(Qt::black);
-            temPen.setStyle(Qt::DashLine);
-            p->setPen(temPen);
-            p->drawLine(QPointF(L.operator [](i).back().x()* scale,L.operator [](i).back().y()* scale),
-                        QPointF(L.operator [](i+1).front().x()* scale,L.operator [](i+1).front().y()* scale));
-        }
+//        if(i<L.size()-1)      //跳转处绘制虚线
+//        {
+//            QPen temPen(Qt::black);
+//            temPen.setStyle(Qt::DashLine);
+//            p->setPen(temPen);
+//            p->drawLine(QPointF(L.operator [](i).back().x()* scale,L.operator [](i).back().y()* scale),
+//                        QPointF(L.operator [](i+1).front().x()* scale,L.operator [](i+1).front().y()* scale));
+//        }
     }
 }
 
@@ -102,7 +102,7 @@ QSize draw::minimumSizeHint() const
 
 QSize draw::sizeHint() const
 {
-    return QSize(800, 400);
+    return QSize(300, 400);
 }
 
 void draw::centering()
@@ -148,6 +148,12 @@ void draw::wheelEvent(QWheelEvent *e)
     double numDegrees = -e->delta() / 8.0;
     double numSteps = numDegrees / 15.0;
     scale /= pow(1.125, numSteps);
+//    if(!this->layer.empty())
+//    {
+//        Boundary boundary(this->layer.boundary());
+//        moveX=width()/2*devicePixelRatio()-(boundary.minX()+(boundary.maxX () - boundary.minX ())/2*devicePixelRatio());
+//        moveY=height()/2*devicePixelRatio()+(boundary.minY()+(boundary.maxY () - boundary.minY ())/2*devicePixelRatio());
+//    }
     update();
 }
 
@@ -166,6 +172,8 @@ void draw::mouseMoveEvent(QMouseEvent *e)
         update();
     } else if (e->buttons() & Qt::RightButton) {
 
+        moveX+=dx*10;
+        moveY+=dy*10;
         update();
     }
     else if(e->buttons() & Qt::MidButton)

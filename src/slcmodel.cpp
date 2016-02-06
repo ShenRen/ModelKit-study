@@ -299,10 +299,12 @@ void SLCModel::skin_core_infill(int interval_num,float space,float shrinkDistanc
 		
         float infillDegree = angle_start + (i - startIndex) / interval_num * angle_delta ;
         //第二步：调用填充函数处理interval_num层数据
-        xd::OutlinesClipperMethod(theInput, theOutput, space,shrinkDistance,infillDegree);
+        xd::OutlinesClipperMethod(theInput, theOutput, space, shrinkDistance, infillDegree);
         //第三步：将输出路径转换成Point类型并加入
          for (int j = i; j != interval_num + i; ++j)
          {
+            if(theOutput[j-i].empty())
+                continue;
             Layer temL;
             temL.setHeight(this->layerHeights.operator [](j));   //感觉没有必要，最后都加到这一层了！
             for(const std::pair<xd::outline,unsigned int>  & xo : theOutput[j-i])  //这里必须是j-i，注意！
@@ -325,6 +327,7 @@ void SLCModel::skin_core_infill(int interval_num,float space,float shrinkDistanc
     }
     int residue=(this->size()-startIndex)%interval_num;
     if(!residue)
+        qDebug() <<"skin_core_infill finished!"<<"\n";
         return;  //刚好能够除尽！
     float infillDegree = angle_start + (this->size() - startIndex ) / interval_num * angle_delta ;
     for(int i = this->layerHeights.size() - residue ; i != this->layerHeights.size() ; ++i )
@@ -340,6 +343,7 @@ void SLCModel::skin_core_infill(int interval_num,float space,float shrinkDistanc
         spec.extraContourWidth = space;
         this->operator [](i).infill(spec);
     }
+    qDebug() <<"skin_core_infill finished!"<<"\n";
 }
 
 void SLCModel::line_infill(qint8 ContourCount, qreal ContourWidth,float space,float shrinkDistance,float angle_start,float angle_delta,qreal LaserPower,qreal ScanSpeed)   //测试用函数
@@ -364,13 +368,13 @@ void SLCModel::line_infill(qint8 ContourCount, qreal ContourWidth,float space,fl
     }
     if(!flag)
         return;  //说明没有需要填充的轮廓数据
-    for(int i=startIndex; i != this->size() ; i++)  //这里必须是<符号！
+    for(int i=startIndex; i != this->size() ; ++i)  //这里必须是<符号！
     {
         //第一步，计算角度
         float infillDegree = angle_start + (i - startIndex) * angle_delta ;
         //第二步，设置填充参数
         Layer::InfillSpecification spec;
-        spec.type = Layer::InfillSpecification::InfillType::Unidirectional;
+        spec.type = Layer::InfillSpecification::InfillType::Unidirectional;  //直线填充
         spec.lineWidth = space;
         spec.interval = 0.0;
         spec.angle = infillDegree;
@@ -390,4 +394,108 @@ void SLCModel::line_infill(qint8 ContourCount, qreal ContourWidth,float space,fl
             }
         }
     }
+    qDebug() <<"line_infill finished!"<<"\n";
+}
+
+void SLCModel::concentric_infill(qint8 ContourCount, qreal ContourWidth, float space, float shrinkDistance, float angle_start, float angle_delta, qreal LaserPower, qreal ScanSpeed)
+{
+    int startIndex=0;
+    bool flag(false);
+    for(const Layer & L : *this)
+    {
+        for(const Polygon & P : L)
+        {
+            if(P.type()== Polygon::PolygonType::Contour)
+            {
+                startIndex=this->indexOf(L);
+                flag=true;
+                break;
+            }
+            if(P.type()== Polygon::PolygonType::Infill)
+                return;   //说明已经填充过了
+        }
+        if(flag)
+            break;
+    }
+    if(!flag)
+        return;  //说明没有需要填充的轮廓数据
+    for(int i=startIndex; i != this->size() ; ++i)  //这里必须是<符号！
+    {
+        //第一步，计算角度
+        float infillDegree = angle_start + (i - startIndex) * angle_delta ;
+        //第二步，设置填充参数
+        Layer::InfillSpecification spec;
+        spec.type = Layer::InfillSpecification::InfillType::Concentric;
+        spec.lineWidth = space;
+        spec.interval = 0.0;
+        spec.angle = infillDegree;
+        spec.shrinkWidth = shrinkDistance;
+        spec.extraContourCount = ContourCount;
+        spec.extraContourWidth = ContourWidth;
+        this->operator [](i).infill(spec);
+    }
+    for(int i=0 ; i!= this->size();++i)
+    {
+        for(int j=0;j!=this->operator [](i).size();++j)
+        {
+            if(this->operator [](i)[j].type()== Polygon::PolygonType::Infill)
+            {
+                this->operator [](i)[j].setLaserPower(LaserPower);
+                this->operator [](i)[j].setScanSpeed(ScanSpeed);
+            }
+        }
+    }
+    qDebug() <<"concentric_infill finished!"<<"\n";
+}
+
+void SLCModel::selfRecognition_infill(float space,float stagger,float angle_start,float angle_delta,qreal LaserPower,qreal ScanSpeed)
+{
+    int startIndex=0;
+    bool flag(false);
+    for(const Layer & L : *this)
+    {
+        for(const Polygon & P : L)
+        {
+            if(P.type()== Polygon::PolygonType::Contour)
+            {
+                startIndex=this->indexOf(L);
+                flag=true;
+                break;
+            }
+            if(P.type()== Polygon::PolygonType::Infill)
+                return;   //说明已经填充过了
+        }
+        if(flag)
+            break;
+    }
+    if(!flag)
+        return;  //说明没有需要填充的轮廓数据
+    for(int i=startIndex; i != this->size() ; ++i)  //这里必须是<符号！
+    {
+        //第一步，计算角度
+        float infillDegree = angle_start + (i - startIndex) * angle_delta ;
+        //第二步，设置填充参数
+        Layer::InfillSpecification spec;
+        spec.type = Layer::InfillSpecification::InfillType::SelfRecognition;
+        spec.lineWidth = space;
+        spec.interval = stagger;
+        spec.angle = infillDegree;
+        //spec.shrinkWidth = shrinkDistance;
+        //spec.extraContourCount = ContourCount;
+        //spec.extraContourWidth = ContourWidth;
+        this->operator [](i).infill(spec);
+    }
+
+    for(int i=0 ; i!= this->size();++i)
+    {
+        for(int j=0;j!=this->operator [](i).size();++j)
+        {
+            if(this->operator [](i)[j].type()== Polygon::PolygonType::Infill)
+            {
+                this->operator [](i)[j].setLaserPower(LaserPower);
+                this->operator [](i)[j].setScanSpeed(ScanSpeed);
+            }
+        }
+    }
+    qDebug() <<"selfRecognition_infill finished!"<<"\n";
 }

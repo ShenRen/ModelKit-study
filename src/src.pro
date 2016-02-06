@@ -25,6 +25,8 @@ HEADERS += \
     ../3rdparty/cura/infill.h \
     ../3rdparty/cura/polygonUtils.h \
     ../3rdparty/xd/generate_line.h \
+    ../3rdparty/xd/pgn_print.h \
+    ../3rdparty/xd/self_recognition.h
 
 SOURCES += \
     point.cpp \
@@ -34,10 +36,29 @@ SOURCES += \
     boundary.cpp \
     ../3rdparty/clipper/clipper.cpp \
     ../3rdparty/cura/infill.cpp \
-    ../3rdparty/xd/generate_line.cpp
+    ../3rdparty/xd/generate_line.cpp \
+    ../3rdparty/xd/self_recognition.cpp
 
 INCLUDEPATH += $$PWD/../include \
-               $$PWD/../3rdparty
+               $$PWD/../3rdparty \
+               E:/Library_useVS2013/CGAL-4.7/include\
+               E:/Library_useVS2013/CGAL-4.7/auxiliary/gmp/include \
+               E:/Library_useVS2013/CGAL-4.7/build_as_binaries/include \
+               E:/Library_useVS2013/boost_1_57_0_32 \
+
+#              D:/boost_1_57_0 D:/CGAL-4.5.1/include D:/CGAL-4.5.1/auxiliary/gmp/include
+
+#LIBS   += -lCGAL-vc120-mt-gd-4.7 -LE:/Library_useVS2013/CGAL-4.7/build_as_binaries/lib \
+         # -llibboost_thread-vc120-mt-gd-1_57 -LE:/Library_useVS2013/boost_1_57_0_32/lib32-msvc-12.0
+
+#LIBS   += -llibgmp-10.lib -LD:/CGAL-4.5.1/auxiliary/gmp/lib \
+#          -llibmpfr-4.lib -LD:/CGAL-4.5.1/auxiliary/gmp/lib
 
 #INCLUDEPATH += $$PWD/../../include
 #DEPENDPATH += $$PWD/../../include
+
+#DEPENDPATH += $$INCLUDEPATH \
+#              E:/Library_useVS2013/CGAL-4.7/auxiliary/gmp/lib \
+#              E:/Library_useVS2013/CGAL-4.7/build_as_binaries/bin \
+#              E:/Library_useVS2013/CGAL-4.7/build_as_binaries/bin/Debug \
+#              E:/Library_useVS2013/boost_1_57_0_32/lib32-msvc-12.0
