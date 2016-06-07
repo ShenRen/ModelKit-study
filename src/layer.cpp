@@ -1,7 +1,7 @@
 ﻿#include "layer.h"
 #include "../3rdparty/clipper/clipper.hpp"
 #include "../3rdparty/xd/generate_line.h"
-#include "../3rdparty/xd/self_recognition.h"
+//#include "../3rdparty/xd/self_recognition.h"
 #include <iostream>
 
 #ifdef USE_CURA
@@ -255,22 +255,22 @@ void Layer::infill(const Layer::InfillSpecification &spec)
                                  spec.extraContourCount,
                                  spec.extraContourWidth);
         }
-        else if(InfillSpecification::InfillType::SelfRecognition == spec.type)
-        {//自识别填充要求进入的多边形都是分开后的多边形，因此需要先将输入多边形按照区域分开！
-            std::vector<xd::outlines> singleArea;
-            xd::offsetReturnSingleRegion(inputValue,singleArea);
-            std::cout<<"这一层是自识别填充，分成了"<<singleArea.size()<<"个小区域"<<"\n";
-            for(int self=0;self!=singleArea.size();++self)
-            {
-                xd::outlines singleInfill;
-                self_identifying(singleArea[self],
-                                 singleInfill,
-                                 spec.lineWidth ,
-                                 spec.interval,
-                                 0 - spec.angle);
-                outputValue.insert(outputValue.end(),singleInfill.begin(),singleInfill.end());
-            }
-        }
+//        else if(InfillSpecification::InfillType::SelfRecognition == spec.type)
+//        {//自识别填充要求进入的多边形都是分开后的多边形，因此需要先将输入多边形按照区域分开！
+//            std::vector<xd::outlines> singleArea;
+//            xd::offsetReturnSingleRegion(inputValue,singleArea);
+//            std::cout<<"这一层是自识别填充，分成了"<<singleArea.size()<<"个小区域"<<"\n";
+//            for(int self=0;self!=singleArea.size();++self)
+//            {
+//                xd::outlines singleInfill;
+//                self_identifying(singleArea[self],
+//                                 singleInfill,
+//                                 spec.lineWidth ,
+//                                 spec.interval,
+//                                 0 - spec.angle);
+//                outputValue.insert(outputValue.end(),singleInfill.begin(),singleInfill.end());
+//            }
+//        }
         qreal zValue (height ());
 
 		for (int i = 0; i != outputContour.size(); ++i)   //这里不能用spec.extraContourCount，因为可能没有偏置轮廓

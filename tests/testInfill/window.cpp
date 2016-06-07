@@ -213,14 +213,14 @@ void Window::infillTrigger()
                                        LaserPowerEdit->text().toDouble(),
                                        ScanSpeedEdit->text().toDouble());
              break;
-    case 3:
-        this->model->selfRecognition_infill(spaceEdit->text().toFloat(),
-                                            interval_numEdit->text().toFloat(),
-                                            angle_startEdit->text().toFloat(),
-                                            angle_deltaEdit->text().toFloat(),
-                                            LaserPowerEdit->text().toDouble(),
-                                            ScanSpeedEdit->text().toDouble());
-             break;
+//    case 3:
+//        this->model->selfRecognition_infill(spaceEdit->text().toFloat(),
+//                                            interval_numEdit->text().toFloat(),
+//                                            angle_startEdit->text().toFloat(),
+//                                            angle_deltaEdit->text().toFloat(),
+//                                            LaserPowerEdit->text().toDouble(),
+//                                            ScanSpeedEdit->text().toDouble());
+//             break;
     default:
         break;
     }

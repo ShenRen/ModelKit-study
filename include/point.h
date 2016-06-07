@@ -1,7 +1,7 @@
 ﻿#ifndef POINT_H
 #define POINT_H
 
-#define use_color
+//#define use_color
 
 #include "math.hpp"
 #include <QDebug>

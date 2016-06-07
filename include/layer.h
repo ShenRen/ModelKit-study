@@ -18,7 +18,7 @@ public:
             Unidirectional,
             Orthogonal,
             Concentric,
-            SelfRecognition
+            //SelfRecognition
         };
 
         InfillType type;

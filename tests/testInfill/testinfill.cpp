@@ -55,10 +55,11 @@ int main(int argc, char *argv[])
 //    qDebug () << double (t2.nsecsElapsed ()) / 1e9;
 //    qDebug() << "finished record time.";
     //qDebug() << "finished record time.";
-    Window bb;
-    bb.show();
 
-    //测试面积是否正确
+    Window bb;
+
+    bb.show();
+ //测试面积是否正确
 //    xd::outline ol1,ol2;
 //    xd::outlines ols;
 //    ol1<<xd::xdpoint(0,0)<<xd::xdpoint(3,0)<<xd::xdpoint(3,3)<<xd::xdpoint(0,3);

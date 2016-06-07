@@ -25,8 +25,7 @@ HEADERS += \
     ../3rdparty/cura/infill.h \
     ../3rdparty/cura/polygonUtils.h \
     ../3rdparty/xd/generate_line.h \
-    ../3rdparty/xd/pgn_print.h \
-    ../3rdparty/xd/self_recognition.h
+    ../3rdparty/xd/pgn_print.h
 
 SOURCES += \
     point.cpp \
@@ -36,15 +35,14 @@ SOURCES += \
     boundary.cpp \
     ../3rdparty/clipper/clipper.cpp \
     ../3rdparty/cura/infill.cpp \
-    ../3rdparty/xd/generate_line.cpp \
-    ../3rdparty/xd/self_recognition.cpp
+    ../3rdparty/xd/generate_line.cpp
 
 INCLUDEPATH += $$PWD/../include \
                $$PWD/../3rdparty \
-               E:/Library_useVS2013/CGAL-4.7/include\
-               E:/Library_useVS2013/CGAL-4.7/auxiliary/gmp/include \
-               E:/Library_useVS2013/CGAL-4.7/build_as_binaries/include \
-               E:/Library_useVS2013/boost_1_57_0_32 \
+#               E:/Library_useVS2013/CGAL-4.7/include\
+#               E:/Library_useVS2013/CGAL-4.7/auxiliary/gmp/include \
+#               E:/Library_useVS2013/CGAL-4.7/build_as_binaries/include \
+#               E:/Library_useVS2013/boost_1_57_0_32 \
 
 #              D:/boost_1_57_0 D:/CGAL-4.5.1/include D:/CGAL-4.5.1/auxiliary/gmp/include
 
