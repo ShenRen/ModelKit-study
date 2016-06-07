@@ -17,7 +17,7 @@ unix|win32: LIBS += -L$$DESTDIR -lModelKit
 INCLUDEPATH += $$PWD/../../include \
                 $$PWD/../../3rdparty
 
-#DEPENDPATH += $$INCLUDEPATH \
+DEPENDPATH += $$INCLUDEPATH \
 #              E:/Library_useVS2013/CGAL-4.7/auxiliary/gmp/lib \
 #              E:/Library_useVS2013/CGAL-4.7/build_as_binaries/bin \
 #              E:/Library_useVS2013/CGAL-4.7/build_as_binaries/bin/Debug \
@@ -28,7 +28,8 @@ INCLUDEPATH += $$PWD/../../include \
 #          -llibgmp-10 -LE:/Library_useVS2013/CGAL-4.7/auxiliary/gmp/lib \
 #          -llibmpfr-4 -LE:/Library_useVS2013/CGAL-4.7/auxiliary/gmp/lib
 
-#HEADERS += \
-#    infillplotwidget.h \
-#    draw.h \
-#    window.h
+HEADERS += \
+    infillplotwidget.h \
+    draw.h \
+    window.h
+
